@@ -4057,6 +4057,7 @@
       <div class="modern-modal-tabs">
         <button class="modal-tab active" onclick="switchSupportTab('tickets')">My Tickets</button>
         <button class="modal-tab" onclick="switchSupportTab('new')">Create Ticket</button>
+        <button class="modal-tab" id="allTicketsTab" onclick="switchSupportTab('all')" style="display: none;">All Tickets <span id="staffTicketBadge" style="background: #ff6b6b; color: #fff; border-radius: 50%; padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-left: 0.5rem; display: none;"></span></button>
       </div>
       <div class="modern-modal-body">
         <div id="ticketsTab" class="support-tab-content active">
@@ -4086,6 +4087,45 @@
               <i class="fas fa-paper-plane"></i> Submit Ticket
             </button>
           </form>
+        </div>
+        <div id="allTicketsTab" class="support-tab-content">
+          <div id="allTicketsList">
+            <p style="text-align: center; color: #888; padding: 2rem;">No tickets yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket Chat Modal -->
+  <div class="modern-modal" id="ticketChatModal">
+    <div class="modern-modal-content" style="max-width: 700px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-comments"></i> Ticket #<span id="chatTicketId"></span></h2>
+        <button class="modern-modal-close" onclick="closeTicketChat()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <div style="background: #0a0a0c; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent);" id="chatTicketSubject"></h3>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span class="ticket-status" id="chatTicketStatus"></span>
+            <span class="ticket-priority" id="chatTicketPriority"></span>
+          </div>
+          <small style="color: #888;" id="chatTicketDate"></small>
+        </div>
+        <div id="ticketMessagesContainer" style="max-height: 400px; overflow-y: auto; margin-bottom: 1rem; padding: 1rem; background: #16161a; border-radius: 8px;">
+          <!-- Messages will be loaded here -->
+        </div>
+        <form id="ticketReplyForm" onsubmit="sendTicketMessage(event)" style="display: flex; gap: 0.5rem;">
+          <input type="text" id="ticketReplyInput" placeholder="Type your message..." required style="flex: 1; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+          <button type="submit" style="padding: 0.8rem 1.5rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-paper-plane"></i> Send
+          </button>
+        </form>
+        <div id="ticketCloseSection" style="margin-top: 1rem; display: none;">
+          <button onclick="closeTicketByStaff()" style="width: 100%; padding: 0.8rem; background: #ff6b6b; border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-times-circle"></i> Close Ticket
+          </button>
         </div>
       </div>
     </div>
@@ -5075,11 +5115,32 @@ For support, contact: support@atlasfn.com
           type: keys[key].type,
           redeemedAt: new Date().toLocaleString()
         }));
+        
+        // Show staff ticket tab if applicable
+        checkStaffAccess();
       } else {
         errorEl.textContent = 'Invalid or inactive key';
         errorEl.style.display = 'block';
       }
     }
+
+    function checkStaffAccess() {
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      const allTicketsTab = document.getElementById('allTicketsTab');
+      
+      if (userKey && ['admin', 'moderator', 'custom'].includes(userKey.type)) {
+        // Show staff ticket tab
+        if (allTicketsTab) allTicketsTab.style.display = 'block';
+        updateStaffTicketBadge();
+      } else {
+        if (allTicketsTab) allTicketsTab.style.display = 'none';
+      }
+    }
+
+    // Check staff access on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      checkStaffAccess();
+    });
 
     function verifyOwnerPassword() {
       const password = document.getElementById('accessPassword').value;
@@ -6791,27 +6852,28 @@ For support, contact: support@atlasfn.com
       event.target.classList.add('active');
       
       // Update tab content
+      document.getElementById('ticketsTab').classList.remove('active');
+      document.getElementById('newTicketTab').classList.remove('active');
+      document.getElementById('allTicketsTab').classList.remove('active');
+      
       if (tab === 'tickets') {
         document.getElementById('ticketsTab').classList.add('active');
-        document.getElementById('newTicketTab').classList.remove('active');
         loadTickets();
-      } else {
-        document.getElementById('ticketsTab').classList.remove('active');
+      } else if (tab === 'new') {
         document.getElementById('newTicketTab').classList.add('active');
+      } else if (tab === 'all') {
+        document.getElementById('allTicketsTab').classList.add('active');
+        loadAllTickets();
       }
     }
 
     function loadTickets() {
       const ticketsList = document.getElementById('ticketsList');
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      
-      if (!currentUser) {
-        ticketsList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">Please log in to view tickets.</p>';
-        return;
-      }
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      const userEmail = userKey ? 'guest_' + Date.now() : null;
       
       const allTickets = JSON.parse(localStorage.getItem('tickets') || '[]');
-      const userTickets = allTickets.filter(t => t.userId === currentUser.email);
+      const userTickets = userEmail ? allTickets.filter(t => t.userId === userEmail) : [];
       
       if (userTickets.length === 0) {
         ticketsList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No tickets yet.</p>';
@@ -6821,8 +6883,10 @@ For support, contact: support@atlasfn.com
       let ticketsHTML = '';
       userTickets.forEach(ticket => {
         const date = new Date(ticket.date).toLocaleString();
+        const messageCount = ticket.messages ? ticket.messages.length : 0;
+        const lastMessage = ticket.messages && ticket.messages.length > 0 ? ticket.messages[ticket.messages.length - 1].text : '';
         ticketsHTML += `
-          <div class="ticket-card">
+          <div class="ticket-card" onclick="openTicketChat(${ticket.id})" style="cursor: pointer;">
             <div class="ticket-header">
               <div>
                 <span class="ticket-status ${ticket.status}">${ticket.status.replace('-', ' ')}</span>
@@ -6831,8 +6895,11 @@ For support, contact: support@atlasfn.com
               <small style="color: #888;">#${ticket.id}</small>
             </div>
             <h4 style="margin: 0 0 0.5rem 0;">${ticket.subject}</h4>
-            <p style="color: #aaa; margin-bottom: 0.5rem;">${ticket.message}</p>
-            <small style="color: #666;">${date}</small>
+            <p style="color: #aaa; margin-bottom: 0.5rem; font-size: 0.9rem;">${lastMessage.substring(0, 80)}${lastMessage.length > 80 ? '...' : ''}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <small style="color: #666;">${date}</small>
+              <small style="color: #a855f7;">${messageCount} message${messageCount !== 1 ? 's' : ''}</small>
+            </div>
           </div>
         `;
       });
@@ -6840,38 +6907,260 @@ For support, contact: support@atlasfn.com
       ticketsList.innerHTML = ticketsHTML;
     }
 
-    function createTicket(event) {
-      event.preventDefault();
+    function loadAllTickets() {
+      const allTicketsList = document.getElementById('allTicketsList');
+      const allTickets = JSON.parse(localStorage.getItem('tickets') || '[]');
       
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      if (!currentUser) {
-        showToast('Please log in to create a ticket', 'error');
+      if (allTickets.length === 0) {
+        allTicketsList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No tickets yet.</p>';
         return;
       }
+      
+      let ticketsHTML = '';
+      allTickets.forEach(ticket => {
+        const date = new Date(ticket.date).toLocaleString();
+        const messageCount = ticket.messages ? ticket.messages.length : 0;
+        const lastMessage = ticket.messages && ticket.messages.length > 0 ? ticket.messages[ticket.messages.length - 1].text : '';
+        const unreadBadge = ticket.unreadStaff ? '<span style="background: #ff6b6b; color: #fff; border-radius: 50%; padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-left: 0.5rem;">NEW</span>' : '';
+        ticketsHTML += `
+          <div class="ticket-card" onclick="openTicketChat(${ticket.id})" style="cursor: pointer;">
+            <div class="ticket-header">
+              <div>
+                <span class="ticket-status ${ticket.status}">${ticket.status.replace('-', ' ')}</span>
+                <span class="ticket-priority ${ticket.priority}" style="margin-left: 0.5rem;">${ticket.priority}</span>
+                ${unreadBadge}
+              </div>
+              <small style="color: #888;">#${ticket.id}</small>
+            </div>
+            <h4 style="margin: 0 0 0.5rem 0;">${ticket.subject}</h4>
+            <p style="color: #aaa; margin-bottom: 0.5rem; font-size: 0.9rem;">${lastMessage.substring(0, 80)}${lastMessage.length > 80 ? '...' : ''}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <small style="color: #666;">${date} - User: ${ticket.userId}</small>
+              <small style="color: #a855f7;">${messageCount} message${messageCount !== 1 ? 's' : ''}</small>
+            </div>
+          </div>
+        `;
+      });
+      
+      allTicketsList.innerHTML = ticketsHTML;
+      updateStaffTicketBadge();
+    }
+
+    function createTicket(event) {
+      event.preventDefault();
       
       const subject = document.getElementById('ticketSubject').value;
       const priority = document.getElementById('ticketPriority').value;
       const message = document.getElementById('ticketMessage').value;
       
+      const userId = 'guest_' + Date.now();
+      
       const ticket = {
         id: Date.now(),
-        userId: currentUser.email,
+        userId: userId,
         subject: subject,
         priority: priority,
-        message: message,
         status: 'open',
-        date: Date.now()
+        date: Date.now(),
+        messages: [
+          {
+            sender: 'user',
+            senderName: 'You',
+            text: message,
+            timestamp: Date.now()
+          }
+        ],
+        unreadStaff: true
       };
       
       const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
       tickets.push(ticket);
       localStorage.setItem('tickets', JSON.stringify(tickets));
       
+      // Notify staff panel holders
+      notifyStaffPanelHolders(ticket);
+      
       showToast('Ticket created successfully!', 'success');
       document.getElementById('newTicketForm').reset();
       switchSupportTab('tickets');
       loadTickets();
       updateTicketBadge();
+    }
+
+    function notifyStaffPanelHolders(ticket) {
+      // This creates a notification marker for staff
+      const staffNotifications = JSON.parse(localStorage.getItem('staffNotifications') || '[]');
+      staffNotifications.push({
+        type: 'new_ticket',
+        ticketId: ticket.id,
+        subject: ticket.subject,
+        timestamp: Date.now()
+      });
+      localStorage.setItem('staffNotifications', JSON.stringify(staffNotifications));
+    }
+
+    function openTicketChat(ticketId) {
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const ticket = tickets.find(t => t.id === ticketId);
+      
+      if (!ticket) {
+        showToast('Ticket not found', 'error');
+        return;
+      }
+      
+      // Mark as read for staff
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      if (userKey && ['admin', 'moderator', 'custom'].includes(userKey.type)) {
+        ticket.unreadStaff = false;
+        const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+        tickets[ticketIndex] = ticket;
+        localStorage.setItem('tickets', JSON.stringify(tickets));
+      }
+      
+      document.getElementById('chatTicketId').textContent = ticket.id;
+      document.getElementById('chatTicketSubject').textContent = ticket.subject;
+      document.getElementById('chatTicketStatus').textContent = ticket.status.replace('-', ' ');
+      document.getElementById('chatTicketStatus').className = 'ticket-status ' + ticket.status;
+      document.getElementById('chatTicketPriority').textContent = ticket.priority;
+      document.getElementById('chatTicketPriority').className = 'ticket-priority ' + ticket.priority;
+      document.getElementById('chatTicketDate').textContent = new Date(ticket.date).toLocaleString();
+      
+      // Load messages
+      loadTicketMessages(ticket);
+      
+      // Show close button if staff
+      if (userKey && ['admin', 'moderator', 'custom'].includes(userKey.type)) {
+        document.getElementById('ticketCloseSection').style.display = 'block';
+      } else {
+        document.getElementById('ticketCloseSection').style.display = 'none';
+      }
+      
+      closeSupport();
+      document.getElementById('ticketChatModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Scroll to bottom
+      setTimeout(() => {
+        const container = document.getElementById('ticketMessagesContainer');
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+    }
+
+    function closeTicketChat() {
+      document.getElementById('ticketChatModal').classList.remove('active');
+      document.body.style.overflow = '';
+      loadTickets();
+      loadAllTickets();
+    }
+
+    function loadTicketMessages(ticket) {
+      const container = document.getElementById('ticketMessagesContainer');
+      let messagesHTML = '';
+      
+      if (ticket.messages && ticket.messages.length > 0) {
+        ticket.messages.forEach(msg => {
+          const time = new Date(msg.timestamp).toLocaleString();
+          const isStaff = msg.sender === 'staff';
+          const alignment = isStaff ? 'flex-start' : 'flex-end';
+          const bgColor = isStaff ? '#a855f7' : '#0a0a0c';
+          const textColor = isStaff ? '#000' : '#fff';
+          
+          messagesHTML += `
+            <div style="display: flex; justify-content: ${alignment}; margin-bottom: 1rem;">
+              <div style="max-width: 70%; background: ${bgColor}; color: ${textColor}; padding: 0.8rem 1rem; border-radius: 12px;">
+                <div style="font-weight: 600; margin-bottom: 0.3rem; font-size: 0.85rem; opacity: 0.9;">${msg.senderName}</div>
+                <div style="margin-bottom: 0.3rem;">${msg.text}</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">${time}</div>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        messagesHTML = '<p style="text-align: center; color: #888;">No messages yet.</p>';
+      }
+      
+      container.innerHTML = messagesHTML;
+    }
+
+    function sendTicketMessage(event) {
+      event.preventDefault();
+      
+      const ticketId = parseInt(document.getElementById('chatTicketId').textContent);
+      const messageText = document.getElementById('ticketReplyInput').value.trim();
+      
+      if (!messageText) return;
+      
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+      
+      if (ticketIndex === -1) {
+        showToast('Ticket not found', 'error');
+        return;
+      }
+      
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      const isStaff = userKey && ['admin', 'moderator', 'custom'].includes(userKey.type);
+      
+      const message = {
+        sender: isStaff ? 'staff' : 'user',
+        senderName: isStaff ? 'Support Staff' : 'You',
+        text: messageText,
+        timestamp: Date.now()
+      };
+      
+      if (!tickets[ticketIndex].messages) {
+        tickets[ticketIndex].messages = [];
+      }
+      
+      tickets[ticketIndex].messages.push(message);
+      
+      // Mark unread for staff if user sent message
+      if (!isStaff) {
+        tickets[ticketIndex].unreadStaff = true;
+      }
+      
+      localStorage.setItem('tickets', JSON.stringify(tickets));
+      
+      document.getElementById('ticketReplyInput').value = '';
+      loadTicketMessages(tickets[ticketIndex]);
+      
+      // Scroll to bottom
+      setTimeout(() => {
+        const container = document.getElementById('ticketMessagesContainer');
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+      
+      showToast('Message sent', 'success');
+    }
+
+    function closeTicketByStaff() {
+      const ticketId = parseInt(document.getElementById('chatTicketId').textContent);
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+      
+      if (ticketIndex === -1) return;
+      
+      tickets[ticketIndex].status = 'closed';
+      localStorage.setItem('tickets', JSON.stringify(tickets));
+      
+      showToast('Ticket closed', 'success');
+      closeTicketChat();
+    }
+
+    function updateStaffTicketBadge() {
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      if (!userKey || !['admin', 'moderator', 'custom'].includes(userKey.type)) return;
+      
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const unreadCount = tickets.filter(t => t.unreadStaff && t.status !== 'closed').length;
+      
+      const badge = document.getElementById('staffTicketBadge');
+      if (badge && unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'inline-block';
+      } else if (badge) {
+        badge.style.display = 'none';
+      }
     }
 
     function updateTicketBadge() {
