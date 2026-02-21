@@ -5032,11 +5032,25 @@ For support, contact: support@atlasfn.com
     }
 
     function buyNow() {
-      // Store selected variant in sessionStorage and redirect to checkout page
+      // Select the variant and scroll to payment form
       const variant = selectedVariant || '1_day';
-      sessionStorage.setItem('selectedProduct', variant);
+      
+      // Set the selected product in the dropdown
+      const accessSelect = document.getElementById('access-duration');
+      if (accessSelect) {
+        accessSelect.value = variant;
+        updateAccessPrice();
+      }
+      
       closeProductDetail();
-      window.open('checkout.html', '_blank');
+      
+      // Scroll to the store/payment section
+      const storeView = document.getElementById('store-view');
+      if (storeView) {
+        storeView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      
+      showToast('Ready to checkout! Fill in your details below.', 'success');
     }
 
     function updateAccessPrice() {
