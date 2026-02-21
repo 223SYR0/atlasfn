@@ -5397,6 +5397,47 @@ For support, contact: support@atlasfn.com
       }
     }
 
+    async function fetchCurrentUserProfile() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return null;
+
+      try {
+        const response = await fetch('/api/auth/user', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          clearCurrentUserProfile();
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('currentUser');
+          return null;
+        }
+
+        const data = await response.json();
+        if (data && data.user) {
+          saveCurrentUserProfile(data.user);
+          syncCurrentUserToLocal(data.user);
+          localStorage.setItem('currentUser', JSON.stringify({
+            id: data.user.id,
+            name: data.user.username,
+            email: data.user.email
+          }));
+          updatePanelMenuVisibility();
+          updateTestOptionVisibility();
+          updateNavBar({ name: data.user.username || data.user.email });
+          return data.user;
+        }
+
+        return null;
+      } catch (error) {
+        console.error('Profile fetch error:', error);
+        return null;
+      }
+    }
+
     let actionModalHandler = null;
     let banRequestTarget = null;
     let focusedBanRequestId = null;
@@ -5897,6 +5938,9 @@ For support, contact: support@atlasfn.com
 
     // Initialize default dev account
     async function initializeDevAccount() {
+      if (localStorage.getItem('authToken')) {
+        return;
+      }
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       
       // Check if dev account already exists
@@ -5934,6 +5978,9 @@ For support, contact: support@atlasfn.com
     // Check if user is logged in on page load
     window.addEventListener('DOMContentLoaded', async () => {
       await initializeDevAccount();
+      if (localStorage.getItem('authToken')) {
+        await fetchCurrentUserProfile();
+      }
       checkAccessRestrictions();
       setLogoBackground();
       setupPrivacyGuards();
@@ -6336,6 +6383,7 @@ For support, contact: support@atlasfn.com
           }));
           saveCurrentUserProfile(data.user);
           syncCurrentUserToLocal(data.user);
+          await fetchCurrentUserProfile();
         }
 
         // Reset form and close modal
@@ -6409,6 +6457,11 @@ For support, contact: support@atlasfn.com
         }));
         saveCurrentUserProfile(data.user);
         syncCurrentUserToLocal(data.user);
+        const profile = await fetchCurrentUserProfile();
+        if (!profile) {
+          showError(errorDiv, 'Login failed. Please try again.');
+          return;
+        }
 
         document.getElementById('loginEmail').value = '';
         document.getElementById('loginPassword').value = '';
