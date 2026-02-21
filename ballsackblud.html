@@ -3281,45 +3281,8 @@
           <i class="fab fa-discord"></i> Discord
         </a>
       </div>
-      <div id="nav-auth">
-        <a href="login.html" target="_blank" style="color: var(--accent); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 8px; transition: all 0.3s;">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </a>
-        <a href="signup.html" target="_blank" style="color: var(--text); text-decoration: none; padding: 0.5rem 1rem; background: var(--accent); color: #000; border-radius: 8px; margin-left: 0.5rem; font-weight: 600; transition: all 0.3s;">
-          <i class="fas fa-user-plus"></i> Sign Up
-        </a>
-      </div>
-      <div id="user-menu" class="user-menu" style="display: none;">
-        <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-          <span class="user-name" id="user-display"></span>
-          <span style="font-size: 12px; color: #a855f7; padding: 4px 8px; background: rgba(168, 85, 247, 0.2); border-radius: 4px;">💰 $<span id="user-balance">0.00</span></span>
-        </div>
-        <button class="logout-btn" style="font-size: 12px; padding: 6px 12px;" onclick="openAddFundsModal()">+ Add Funds</button>
-        <button class="logout-btn" onclick="logout()">Log Out</button>
-      </div>
     </nav>
   </header>
-
-  <!-- Login Modal -->
-  <div class="auth-modal" id="loginModal">
-    <div class="auth-modal-content">
-      <h2><i class="fas fa-sign-in-alt"></i> Log In</h2>
-      <div class="auth-error" id="loginError"></div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="loginEmail" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="loginPassword" placeholder="Password">
-      </div>
-      <button class="auth-modal-btn" onclick="handleLogin()">Log In</button>
-      <div class="auth-modal-toggle">
-        Don't have an account? <a onclick="switchToSignup()">Sign Up</a>
-      </div>
-      <button class="auth-modal-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); margin-top: 1rem;" onclick="closeModal('loginModal')">Cancel</button>
-    </div>
-  </div>
 
   <!-- Add Funds Modal -->
   <div class="auth-modal" id="addFundsModal">
@@ -3919,35 +3882,6 @@
       </div>
 
       <button class="close-staff-btn" onclick="closeStaffPanel()">Close Panel</button>
-    </div>
-  </div>
-
-  <!-- Signup Modal -->
-  <div class="auth-modal" id="signupModal">
-    <div class="auth-modal-content">
-      <h2><i class="fas fa-user-plus"></i> Sign Up</h2>
-      <div class="auth-error" id="signupError"></div>
-      <div class="form-group">
-        <label>Full Name <span style="color: #888; font-weight: normal;">(optional)</span></label>
-        <input type="text" id="signupName" placeholder="Your Name">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="signupEmail" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="signupPassword" placeholder="Min 8 chars: 1 uppercase, 1 lowercase, 1 number">
-      </div>
-      <div class="form-group">
-        <label>Confirm Password</label>
-        <input type="password" id="signupConfirm" placeholder="Confirm Password">
-      </div>
-      <button class="auth-modal-btn" onclick="handleSignup()">Create Account</button>
-      <div class="auth-modal-toggle">
-        Already have an account? <a onclick="switchToLogin()">Log In</a>
-      </div>
-      <button class="auth-modal-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); margin-top: 1rem;" onclick="closeModal('signupModal')">Cancel</button>
     </div>
   </div>
 
@@ -4904,11 +4838,11 @@ For support, contact: support@atlasfn.com
     }
 
     function openLoginFromLanding() {
-      window.open('login.html', '_blank');
+      showToast('Login is disabled on this site.', 'info');
     }
 
     function openSignupFromLanding() {
-      window.open('signup.html', '_blank');
+      showToast('Signup is disabled on this site.', 'info');
     }
 
     // Initialize landing page on load
@@ -5988,17 +5922,8 @@ For support, contact: support@atlasfn.com
       updateTestOptionVisibility();
       updatePanelMenuVisibility();
       
-      // Check if user is logged in and update UI accordingly
-      const currentUser = localStorage.getItem('currentUser');
-      if (currentUser) {
-        updateNavBar(JSON.parse(currentUser));
-        updateTestOptionVisibility();
-      } else {
-        // Show login/signup buttons when not logged in
-        document.getElementById('nav-auth').style.display = 'flex';
-        document.getElementById('user-menu').style.display = 'none';
-      }
-      
+      // Auth UI removed
+
       // Landing page disabled - directly accessible
     });
 
@@ -6261,250 +6186,39 @@ For support, contact: support@atlasfn.com
       });
     }
 
-    // Open signup modal
     function openSignupModal() {
-      closeModal('loginModal');
-      document.getElementById('signupModal').classList.add('active');
-      document.getElementById('signupEmail').focus();
+      showToast('Signup is disabled on this site.', 'info');
     }
 
-    // Open login modal
     function openLoginModal() {
-      window.open('login.html', '_blank');
+      showToast('Login is disabled on this site.', 'info');
     }
 
-    // Close modal
     function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+      }
     }
 
-    // Switch from login to signup
     function switchToSignup() {
-      window.open('signup.html', '_blank');
+      showToast('Signup is disabled on this site.', 'info');
     }
 
-    // Switch from signup to login
     function switchToLogin() {
-      window.open('login.html', '_blank');
-    }
-    
-    // Open signup modal
-    function openSignupModal() {
-      window.open('signup.html', '_blank');
+      showToast('Login is disabled on this site.', 'info');
     }
 
-    // Handle signup
     async function handleSignup() {
-      const name = sanitizeInput(document.getElementById('signupName').value.trim());
-      const email = sanitizeInput(document.getElementById('signupEmail').value.trim().toLowerCase());
-      const password = document.getElementById('signupPassword').value;
-      const confirm = document.getElementById('signupConfirm').value;
-      const errorDiv = document.getElementById('signupError');
-
-      errorDiv.classList.remove('show');
-      errorDiv.textContent = '';
-
-      // Name is optional (removed validation)
-
-      if (!email) {
-        showError(errorDiv, 'Please enter your email');
-        return;
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showError(errorDiv, 'Please enter a valid email address');
-        return;
-      }
-
-      if (password.length < 8) {
-        showError(errorDiv, 'Password must be at least 8 characters');
-        return;
-      }
-
-      // Validate password strength
-      const hasUpperCase = /[A-Z]/.test(password);
-      const hasLowerCase = /[a-z]/.test(password);
-      const hasNumber = /[0-9]/.test(password);
-      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-
-      if (!hasUpperCase) {
-        showError(errorDiv, 'Password must contain at least one uppercase letter');
-        return;
-      }
-
-      if (!hasLowerCase) {
-        showError(errorDiv, 'Password must contain at least one lowercase letter');
-        return;
-      }
-
-      if (!hasNumber) {
-        showError(errorDiv, 'Password must contain at least one number');
-        return;
-      }
-
-      // Special characters are recommended but not required
-      // if (!hasSpecialChar) {
-      //   showError(errorDiv, 'Password must contain at least one special character (!@#$%^&*)');
-      //   return;
-      // }
-
-      if (password !== confirm) {
-        showError(errorDiv, 'Passwords do not match');
-        return;
-      }
-
-      try {
-        // Call signup API
-        const response = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: name || 'User',
-            email: email,
-            password: password
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          showError(errorDiv, data.error || 'Signup failed');
-          return;
-        }
-
-        if (data.session && data.session.access_token) {
-          localStorage.setItem('authToken', data.session.access_token);
-          localStorage.setItem('currentUser', JSON.stringify({ 
-            id: data.user.id, 
-            name: data.user.username, 
-            email: data.user.email 
-          }));
-          saveCurrentUserProfile(data.user);
-          syncCurrentUserToLocal(data.user);
-          await fetchCurrentUserProfile();
-        }
-
-        // Reset form and close modal
-        document.getElementById('signupName').value = '';
-        document.getElementById('signupEmail').value = '';
-        document.getElementById('signupPassword').value = '';
-        document.getElementById('signupConfirm').value = '';
-        closeModal('signupModal');
-
-        if (data.session && data.session.access_token) {
-          updateNavBar({ name: data.user.username });
-          showToast('Account created successfully! Welcome!', 'success');
-        } else {
-          showToast('Account created! Check your email to confirm, then log in.', 'success');
-        }
-      } catch (error) {
-        console.error('Signup error:', error);
-        showError(errorDiv, 'An error occurred. Please try again.');
-      }
+      showToast('Signup is disabled on this site.', 'info');
     }
 
-    // Handle login
     async function handleLogin() {
-      const email = sanitizeInput(document.getElementById('loginEmail').value.trim().toLowerCase());
-      const password = document.getElementById('loginPassword').value;
-      const errorDiv = document.getElementById('loginError');
-
-      errorDiv.classList.remove('show');
-      errorDiv.textContent = '';
-
-      if (!email) {
-        showError(errorDiv, 'Please enter your email');
-        return;
-      }
-
-      if (!password) {
-        showError(errorDiv, 'Please enter your password');
-        return;
-      }
-
-      // Check rate limit
-      if (!checkRateLimit(email)) {
-        showError(errorDiv, 'Too many login attempts. Please try again in 15 minutes.');
-        return;
-      }
-
-      try {
-        // Call login API
-        const response = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: email,
-            password: password
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          showError(errorDiv, data.error || 'Login failed');
-          return;
-        }
-
-        // Store session token
-        localStorage.setItem('authToken', data.session.access_token);
-        localStorage.setItem('currentUser', JSON.stringify({ 
-          id: data.user.id, 
-          name: data.user.username, 
-          email: data.user.email 
-        }));
-        saveCurrentUserProfile(data.user);
-        syncCurrentUserToLocal(data.user);
-        const profile = await fetchCurrentUserProfile();
-        if (!profile) {
-          showError(errorDiv, 'Login failed. Please try again.');
-          return;
-        }
-
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
-        closeModal('loginModal');
-
-        // Reset rate limit on successful login
-        delete loginAttempts[email];
-
-        updateNavBar({ name: data.user.username });
-        showToast('Logged in successfully! Welcome back, ' + data.user.username + '!', 'success');
-      } catch (error) {
-        console.error('Login error:', error);
-        showError(errorDiv, 'An error occurred. Please try again.');
-      }
+      showToast('Login is disabled on this site.', 'info');
     }
 
-    // Logout
     function logout() {
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('authToken');
-      clearCurrentUserProfile();
-      
-      // Show login/signup buttons
-      const navAuth = document.getElementById('nav-auth');
-      if (navAuth) {
-        navAuth.style.display = 'flex';
-      }
-      
-      // Hide user menu
-      document.getElementById('user-menu').style.display = 'none';
-      
-      // Close sidebar if open
-      const sidebar = document.querySelector('.sidebar-menu');
-      const overlay = document.querySelector('.sidebar-overlay');
-      const hamburger = document.querySelector('.hamburger-menu');
-      if (sidebar) sidebar.classList.remove('active');
-      if (overlay) overlay.classList.remove('active');
-      if (hamburger) hamburger.classList.remove('hidden');
-      
-      showToast('You have been logged out', 'success');
-      
-      // Reload to reset UI
-      setTimeout(() => window.location.reload(), 500);
+      showToast('Login is disabled on this site.', 'info');
     }
 
     // ===== WALLET/FUNDS FUNCTIONS =====
@@ -6886,13 +6600,6 @@ For support, contact: support@atlasfn.com
 
     // ===== SETTINGS =====
     function openSettings() {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      
-      if (!currentUser) {
-        showToast('Please log in to access settings', 'error');
-        return;
-      }
-      
       // Open settings in new tab
       window.open('settings.html', '_blank');
       toggleSidebar(); // Close sidebar
@@ -6900,72 +6607,7 @@ For support, contact: support@atlasfn.com
 
     // Update navigation bar based on auth state
     function updateNavBar(user) {
-      if (!user || (!user.id && !user.email)) {
-        user = JSON.parse(localStorage.getItem('currentUser') || 'null') || user;
-      }
-      // Hide login/signup buttons when logged in
-      const navAuth = document.getElementById('nav-auth');
-      if (navAuth) {
-        navAuth.style.display = 'none';
-      }
-      
-      // Show user menu
-      const userMenu = document.getElementById('user-menu');
-      if (userMenu) {
-        userMenu.style.display = 'flex';
-        document.getElementById('user-display').textContent = '👤 ' + user.name;
-        
-        // Update balance display
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const fullUser = users.find(u => u.id === user.id || u.email === user.email);
-        if (fullUser) {
-          const balance = fullUser.balance || 0;
-          const balanceEl = document.getElementById('user-balance');
-          if (balanceEl) {
-            balanceEl.textContent = balance.toFixed(2);
-          }
-        }
-      }
-      // Update panel menu items
-      updatePanelMenuVisibility();
-      
-      // Get full user from localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const fullUser = users.find(u => u.id === user.id || u.email === user.email);
-      
-      if (fullUser) {
-        // Show dev button if user is developer
-        if (fullUser.isDev) {
-          const devBtn = document.getElementById('dev-btn');
-          const devNotif = document.getElementById('dev-notif-wrapper');
-          if (devBtn) devBtn.style.display = 'block';
-          if (devNotif) devNotif.style.display = 'flex';
-          renderDevNotifications();
-        } else {
-          const devBtn = document.getElementById('dev-btn');
-          const devNotif = document.getElementById('dev-notif-wrapper');
-          if (devBtn) devBtn.style.display = 'none';
-          if (devNotif) devNotif.style.display = 'none';
-        }
-        
-        // Show head staff button if user is head staff
-        if (fullUser.isHeadStaff) {
-          const headBtn = document.getElementById('head-staff-btn');
-          if (headBtn) headBtn.style.display = 'block';
-        } else {
-          const headBtn = document.getElementById('head-staff-btn');
-          if (headBtn) headBtn.style.display = 'none';
-        }
-        
-        // Show staff button if user is staff
-        if (fullUser.isStaff) {
-          const staffBtn = document.getElementById('staff-btn');
-          if (staffBtn) staffBtn.style.display = 'block';
-        } else {
-          const staffBtn = document.getElementById('staff-btn');
-          if (staffBtn) staffBtn.style.display = 'none';
-        }
-      }
+      return;
     }
 
     // ====== STRIPE PAYMENT INTERFACE ======
