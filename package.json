@@ -1,0 +1,8 @@
+{
+  "name": "atlasfn",
+  "version": "1.0.0",
+  "description": "Atlas FN - Fortnite Access Key Store",
+  "dependencies": {
+    "stripe": "^14.14.0"
+  }
+}
