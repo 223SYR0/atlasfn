@@ -6,13 +6,33 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+function parseRequestBody(req) {
+  if (!req || typeof req.body === 'undefined' || req.body === null) {
+    return {};
+  }
+
+  if (typeof req.body === 'string') {
+    try {
+      return JSON.parse(req.body);
+    } catch (error) {
+      return {};
+    }
+  }
+
+  return req.body;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const { username, email, password } = req.body;
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_KEY) {
+      return res.status(500).json({ error: 'Supabase environment variables are missing' });
+    }
+
+    const { username, email, password } = parseRequestBody(req);
 
     if (!username || !email || !password) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -61,7 +81,7 @@ module.exports = async (req, res) => {
         balance: profile.balance,
         role: profile.role
       },
-      session: authData.session
+      session: authData.session || null
     });
   } catch (error) {
     console.error('Signup error:', error);

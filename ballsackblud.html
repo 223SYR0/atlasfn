@@ -6210,13 +6210,14 @@ For support, contact: support@atlasfn.com
           return;
         }
 
-        // Store session token
-        localStorage.setItem('authToken', data.session.access_token);
-        localStorage.setItem('currentUser', JSON.stringify({ 
-          id: data.user.id, 
-          name: data.user.username, 
-          email: data.user.email 
-        }));
+        if (data.session && data.session.access_token) {
+          localStorage.setItem('authToken', data.session.access_token);
+          localStorage.setItem('currentUser', JSON.stringify({ 
+            id: data.user.id, 
+            name: data.user.username, 
+            email: data.user.email 
+          }));
+        }
 
         // Reset form and close modal
         document.getElementById('signupName').value = '';
@@ -6225,8 +6226,12 @@ For support, contact: support@atlasfn.com
         document.getElementById('signupConfirm').value = '';
         closeModal('signupModal');
 
-        updateNavBar({ name: data.user.username });
-        showToast('Account created successfully! Welcome!', 'success');
+        if (data.session && data.session.access_token) {
+          updateNavBar({ name: data.user.username });
+          showToast('Account created successfully! Welcome!', 'success');
+        } else {
+          showToast('Account created! Check your email to confirm, then log in.', 'success');
+        }
       } catch (error) {
         console.error('Signup error:', error);
         showError(errorDiv, 'An error occurred. Please try again.');
