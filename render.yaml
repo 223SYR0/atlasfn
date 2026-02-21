@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: atlasfn-server
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r server/requirements.txt
+    startCommand: gunicorn --chdir server server:app
+    envVars:
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLIC_KEY
+        sync: false

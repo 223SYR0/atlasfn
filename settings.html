@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Atlasfn</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --surface: #16161a;
+      --border: #2e2e38;
+      --text: #f5f5f7;
+      --accent: #a855f7;
+      --success: #22c55e;
+      --error: #ef4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0a0014 0%, #1a0a2e 50%, #0a0014 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.05) 0%, transparent 50%);
+      animation: rotate 30s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .settings-container {
+      max-width: 800px;
+      width: 100%;
+      background: rgba(22, 22, 26, 0.95);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(10px);
+    }
+
+    .settings-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .settings-header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(90deg, #a855f7, #ec4899);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .settings-header p {
+      color: #888;
+      font-size: 0.95rem;
+    }
+
+    .settings-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 1rem;
+      background: none;
+      border: none;
+      color: #888;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+      font-size: 1rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: rgba(10, 10, 12, 0.8);
+      color: var(--text);
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+    }
+
+    .form-group input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .form-group small {
+      display: block;
+      margin-top: 0.5rem;
+      color: #888;
+      font-size: 0.85rem;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      color: #000;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+    }
+
+    .settings-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      background: rgba(168, 85, 247, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .settings-option h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--text);
+    }
+
+    .settings-option p {
+      margin: 0;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #333;
+      transition: 0.4s;
+      border-radius: 30px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: var(--accent);
+    }
+
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(30px);
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .back-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .back-link a:hover {
+      color: #ec4899;
+    }
+
+    /* Toast Notification */
+    .toast-container {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .toast {
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      color: var(--text);
+      font-weight: 600;
+      animation: slideIn 0.3s ease-out;
+      min-width: 300px;
+    }
+
+    .toast.success {
+      border-color: var(--success);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .toast.error {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="settings-container">
+    <div class="settings-header">
+      <h1><i class="fas fa-cog"></i> Account Settings</h1>
+      <p>Manage your account preferences and security</p>
+    </div>
+
+    <div class="settings-tabs">
+      <button class="tab-btn active" onclick="switchTab('profile')">
+        <i class="fas fa-user"></i> Profile
+      </button>
+      <button class="tab-btn" onclick="switchTab('security')">
+        <i class="fas fa-lock"></i> Security
+      </button>
+      <button class="tab-btn" onclick="switchTab('preferences')">
+        <i class="fas fa-sliders-h"></i> Preferences
+      </button>
+    </div>
+
+    <!-- Profile Tab -->
+    <div id="profileTab" class="tab-content active">
+      <form id="profileForm" onsubmit="updateProfile(event)">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Display Name</label>
+          <input type="text" id="settingsName" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" id="settingsEmail" placeholder="your@email.com" disabled>
+          <small><i class="fas fa-info-circle"></i> Email cannot be changed</small>
+        </div>
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
+      </form>
+    </div>
+
+    <!-- Security Tab -->
+    <div id="securityTab" class="tab-content">
+      <form id="passwordForm" onsubmit="changePassword(event)">
+        <div class="form-group">
+          <label><i class="fas fa-key"></i> Current Password</label>
+          <input type="password" id="currentPassword" placeholder="Enter current password">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> New Password</label>
+          <input type="password" id="newPassword" placeholder="Enter new password">
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Confirm New Password</label>
+          <input type="password" id="confirmPassword" placeholder="Confirm new password">
+        </div>
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-shield-alt"></i> Update Password
+        </button>
+      </form>
+    </div>
+
+    <!-- Preferences Tab -->
+    <div id="preferencesTab" class="tab-content">
+      <div class="settings-option">
+        <div>
+          <h4><i class="fas fa-bell"></i> Email Notifications</h4>
+          <p>Receive updates about your orders and tickets</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="emailNotifs" checked onchange="savePreference('emailNotifs', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-option">
+        <div>
+          <h4><i class="fas fa-shield-alt"></i> Two-Factor Authentication</h4>
+          <p>Add an extra layer of security</p>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="twoFactor" onchange="savePreference('twoFactor', this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="back-link">
+      <a href="javascript:window.close()"><i class="fas fa-arrow-left"></i> Close Settings</a>
+    </div>
+  </div>
+
+  <script>
+    // Load current user data
+    function loadUserData() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      
+      if (!currentUser) {
+        showToast('Please log in to access settings', 'error');
+        setTimeout(() => window.close(), 2000);
+        return;
+      }
+      
+      document.getElementById('settingsName').value = currentUser.name || '';
+      document.getElementById('settingsEmail').value = currentUser.email || '';
+      
+      // Load preferences
+      const prefs = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+      document.getElementById('emailNotifs').checked = prefs.emailNotifs !== false;
+      document.getElementById('twoFactor').checked = prefs.twoFactor === true;
+    }
+
+    // Switch tabs
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.closest('.tab-btn').classList.add('active');
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.getElementById(tabName + 'Tab').classList.add('active');
+    }
+
+    // Update profile
+    function updateProfile(event) {
+      event.preventDefault();
+      
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) return;
+      
+      const newName = document.getElementById('settingsName').value.trim();
+      
+      if (!newName) {
+        showToast('Please enter a display name', 'error');
+        return;
+      }
+      
+      currentUser.name = newName;
+      
+      // Update in users array
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const userIndex = users.findIndex(u => u.email === currentUser.email);
+      if (userIndex !== -1) {
+        users[userIndex].name = newName;
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+      
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      showToast('Profile updated successfully!', 'success');
+    }
+
+    // Change password
+    function changePassword(event) {
+      event.preventDefault();
+      
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser) return;
+      
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      // Get user from users array
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = users.find(u => u.email === currentUser.email);
+      
+      if (!user) {
+        showToast('User not found', 'error');
+        return;
+      }
+      
+      // Verify current password
+      if (currentPassword !== user.password) {
+        showToast('Current password is incorrect', 'error');
+        return;
+      }
+      
+      // Check if new passwords match
+      if (newPassword !== confirmPassword) {
+        showToast('New passwords do not match', 'error');
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        showToast('Password must be at least 6 characters', 'error');
+        return;
+      }
+      
+      // Update password
+      user.password = newPassword;
+      currentUser.password = newPassword;
+      
+      const userIndex = users.findIndex(u => u.email === currentUser.email);
+      if (userIndex !== -1) {
+        users[userIndex].password = newPassword;
+        localStorage.setItem('users', JSON.stringify(users));
+      }
+      
+      localStorage.setItem('currentUser', JSON.stringify(currentUser));
+      showToast('Password changed successfully!', 'success');
+      document.getElementById('passwordForm').reset();
+    }
+
+    // Save preference
+    function savePreference(key, value) {
+      const prefs = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+      prefs[key] = value;
+      localStorage.setItem('userPreferences', JSON.stringify(prefs));
+      showToast('Preference saved', 'success');
+    }
+
+    // Toast notification
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 3500);
+    }
+
+    // Load data on page load
+    window.addEventListener('DOMContentLoaded', loadUserData);
+  </script>
+</body>
+</html>
