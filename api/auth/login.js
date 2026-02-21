@@ -32,6 +32,12 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: 'Supabase environment variables are missing' });
     }
 
+    const supabaseUrl = process.env.SUPABASE_URL.trim();
+    const urlOk = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(supabaseUrl);
+    if (!urlOk) {
+      return res.status(500).json({ error: 'SUPABASE_URL is invalid. Copy Project URL from Supabase Settings > API.' });
+    }
+
     const { email, password } = parseRequestBody(req);
 
     if (!email || !password) {
@@ -45,6 +51,10 @@ module.exports = async (req, res) => {
     });
 
     if (authError) {
+      const message = authError.message || 'Invalid credentials';
+      if (message.toLowerCase().includes('fetch failed')) {
+        return res.status(500).json({ error: 'Supabase request failed. Check SUPABASE_URL and try again.' });
+      }
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 

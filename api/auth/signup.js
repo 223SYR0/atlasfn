@@ -32,6 +32,12 @@ module.exports = async (req, res) => {
       return res.status(500).json({ error: 'Supabase environment variables are missing' });
     }
 
+    const supabaseUrl = process.env.SUPABASE_URL.trim();
+    const urlOk = /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/i.test(supabaseUrl);
+    if (!urlOk) {
+      return res.status(500).json({ error: 'SUPABASE_URL is invalid. Copy Project URL from Supabase Settings > API.' });
+    }
+
     const { username, email, password } = parseRequestBody(req);
 
     if (!username || !email || !password) {
@@ -50,7 +56,11 @@ module.exports = async (req, res) => {
     });
 
     if (authError) {
-      return res.status(400).json({ error: authError.message });
+      const message = authError.message || 'Signup failed';
+      if (message.toLowerCase().includes('fetch failed')) {
+        return res.status(500).json({ error: 'Supabase request failed. Check SUPABASE_URL and try again.' });
+      }
+      return res.status(400).json({ error: message });
     }
 
     // Create user profile

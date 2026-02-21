@@ -5452,6 +5452,9 @@ For support, contact: support@atlasfn.com
       if (privacyConfig.blockHotkeys) {
         document.addEventListener('keydown', (event) => {
           if (isDevUser() || isTestModeActive()) return;
+          if (typeof event.key !== 'string') {
+            return;
+          }
           const key = event.key.toLowerCase();
           const ctrl = event.ctrlKey || event.metaKey;
           const shift = event.shiftKey;
