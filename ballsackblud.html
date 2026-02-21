@@ -3280,8 +3280,8 @@
         <a href="https://discord.gg/Y6jVxPVV" target="_blank" title="Join our Discord">
           <i class="fab fa-discord"></i> Discord
         </a>
-        <button onclick="openAccessModal()" style="background: linear-gradient(135deg, #a855f7, #d946ef); border: none; padding: 0.8rem 1.5rem; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.95rem;">
-          <i class="fas fa-key"></i> Owner Access
+        <button onclick="openRedeemModal()" style="background: linear-gradient(135deg, #a855f7, #d946ef); border: none; padding: 0.8rem 1.5rem; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.95rem;">
+          <i class="fas fa-ticket-alt"></i> Redeem Panel Key
         </button>
       </div>
     </nav>
@@ -3935,22 +3935,46 @@
     </div>
   </div>
 
-  <!-- Access Modal -->
+  <!-- Redeem Key Modal -->
+  <div class="modern-modal" id="redeemModal">
+    <div class="modern-modal-content" style="max-width: 450px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-ticket-alt"></i> Redeem Panel Key</h2>
+        <button class="modern-modal-close" onclick="closeRedeemModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Enter your panel access key to unlock your permissions.</p>
+        <div class="form-group">
+          <label>Access Key</label>
+          <input type="text" id="redeemKey" placeholder="ATL_XXXXX_XXXXX" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-family: monospace;">
+        </div>
+        <div id="redeemError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+        <button onclick="redeemPanelKey()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; margin-top: 1.5rem; cursor: pointer;">
+          <i class="fas fa-unlock"></i> Redeem Key
+        </button>
+        <button onclick="openOwnerAccessPrompt()" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 8px; font-size: 0.85rem; margin-top: 0.5rem; cursor: pointer;">
+          <i class="fas fa-crown"></i> Owner? Click here
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Owner Access Modal -->
   <div class="modern-modal" id="accessModal">
     <div class="modern-modal-content" style="max-width: 450px;">
       <div class="modern-modal-header">
-        <h2><i class="fas fa-lock"></i> Owner Access</h2>
+        <h2><i class="fas fa-crown"></i> Owner Verification</h2>
         <button class="modern-modal-close" onclick="closeAccessModal()">×</button>
       </div>
       <div class="modern-modal-body">
-        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Enter the owner password to access the panel.</p>
+        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Enter the owner master password.</p>
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="accessPassword" placeholder="Enter password" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+          <label>Master Password</label>
+          <input type="password" id="accessPassword" placeholder="Enter master password" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
         </div>
         <div id="accessError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
         <button onclick="verifyOwnerPassword()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; margin-top: 1.5rem; cursor: pointer;">
-          <i class="fas fa-lock-open"></i> Unlock
+          <i class="fas fa-lock-open"></i> Unlock Owner Panel
         </button>
       </div>
     </div>
@@ -5002,8 +5026,25 @@ For support, contact: support@atlasfn.com
     }
 
     // ===== OWNER ACCESS SYSTEM =====
-    const ownerPassword = 'Atlas2025';
+    const ownerPassword = 'Atl4s$Pr0_Ow9r#2026!SecureK3y';
     const panelKeys = {};
+
+    function openRedeemModal() {
+      document.getElementById('redeemModal').classList.add('active');
+      document.getElementById('redeemKey').value = '';
+      document.getElementById('redeemError').style.display = 'none';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRedeemModal() {
+      document.getElementById('redeemModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function openOwnerAccessPrompt() {
+      closeRedeemModal();
+      setTimeout(() => openAccessModal(), 100);
+    }
 
     function openAccessModal() {
       document.getElementById('accessModal').classList.add('active');
@@ -5015,6 +5056,29 @@ For support, contact: support@atlasfn.com
     function closeAccessModal() {
       document.getElementById('accessModal').classList.remove('active');
       document.body.style.overflow = '';
+    }
+
+    function redeemPanelKey() {
+      const key = document.getElementById('redeemKey').value.trim();
+      const errorEl = document.getElementById('redeemError');
+      
+      const stored = localStorage.getItem('ownerPanelKeys');
+      const keys = stored ? JSON.parse(stored) : {};
+      
+      if (keys[key] && keys[key].active) {
+        closeRedeemModal();
+        showToast('Key redeemed! Access granted to: ' + keys[key].name, 'success');
+        // Store the redeemed key for the user
+        localStorage.setItem('userActiveKey', JSON.stringify({
+          key: key,
+          panel: keys[key].name,
+          type: keys[key].type,
+          redeemedAt: new Date().toLocaleString()
+        }));
+      } else {
+        errorEl.textContent = 'Invalid or inactive key';
+        errorEl.style.display = 'block';
+      }
     }
 
     function verifyOwnerPassword() {
