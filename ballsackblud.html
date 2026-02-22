@@ -9779,9 +9779,6 @@ For support, contact: support@atlasfn.com
         }
       });
       
-      console.log('Switched to tab:', tabName);
-    }
-      
       // Load tab data
       if (tabName === 'payouts') {
         loadPayoutHistory();
@@ -9791,6 +9788,8 @@ For support, contact: support@atlasfn.com
       } else if (tabName === 'users') {
         loadOwnerUsers();
       }
+      
+      console.log('Switched to tab:', tabName);
     }
 
     function openAddCardModal() {
