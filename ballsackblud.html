@@ -5038,7 +5038,25 @@ For support, contact: support@atlasfn.com
 
     // ===== OWNER ACCESS SYSTEM =====
     const ownerPassword = 'Atl4s$Pr0_Ow9r#2026!SecureK3y';
-    const panelKeys = {};
+    const panelKeys = {
+      'ATL_DEV_PANEL_2026': {
+        name: 'Developer Panel',
+        type: 'admin',
+        created: new Date().toLocaleString(),
+        active: true
+      },
+      'ATL_HEAD_STAFF_2026': {
+        name: 'Head Staff Panel',
+        type: 'moderator',
+        created: new Date().toLocaleString(),
+        active: true
+      }
+    };
+    
+    // Initialize keys in localStorage
+    if (!localStorage.getItem('ownerPanelKeys')) {
+      localStorage.setItem('ownerPanelKeys', JSON.stringify(panelKeys));
+    }
 
     function openRedeemModal() {
       document.getElementById('redeemModal').classList.add('active');
