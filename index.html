@@ -22,9 +22,10 @@
       --bg: #0f0f11;
       --card: #16161a;
       --text: #e0e0e0;
-      --accent: #00d4ff;
-      --accent-dark: #0099bb;
+      --accent: #a855f7;
+      --accent-dark: #8b35d4;
       --border: #2a2a32;
+      --topbar: #1e1f22;
       --logo-bg: url('atlas_logo.png');
     }
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -61,7 +62,14 @@
       animation: fadeIn 1s ease-in-out;
       position: relative;
       overflow-x: hidden;
-      cursor: none;
+      cursor: none !important;
+      -webkit-font-smoothing: antialiased;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    * {
+      cursor: none !important;
     }
 
     button,
@@ -69,7 +77,7 @@
     input,
     select,
     textarea {
-      cursor: none;
+      cursor: none !important;
     }
 
     /* Hex Grid Background Canvas */
@@ -79,11 +87,13 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
+      background: rgba(168, 85, 247, 0.04);
+      border: 1px solid rgba(168, 85, 247, 0.15);
       pointer-events: none;
       z-index: -1;
-      backdrop-filter: blur(10px);
+      opacity: 1;
+      will-change: contents;
+      image-rendering: pixelated;
     }
     
     /* Landing Page */
@@ -116,7 +126,7 @@
 
     .landing-logo {
       margin-bottom: 2rem;
-      animation: float 3s ease-in-out infinite;
+      animation: none !important;
     }
 
     @keyframes float {
@@ -169,7 +179,7 @@
       background: rgba(168, 85, 247, 0.1);
       border: 2px solid #a855f7;
       border-radius: 16px;
-      animation: pulse 2s infinite;
+      animation: none !important;
     }
 
     @keyframes pulse {
@@ -231,22 +241,40 @@
     }
 
     header {
-      background: linear-gradient(180deg, #0a0a0c, transparent);
-      padding: 0.5rem 2%;
+      background: rgba(30, 31, 34, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 0.75rem 1rem;
       position: sticky;
       top: 0;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-      border-bottom: 2px solid rgba(168, 85, 247, 0.3);
-      animation: breathingPurple 3s ease-in-out infinite;
+      z-index: 10100;
+      border-bottom: none;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      will-change: transform;
     }
     nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      max-width: 1400px;
-      margin: 0 auto;
-      gap: 0.6rem;
+      max-width: 100%;
+      width: 100%;
+      margin: 0;
+      gap: 1rem;
+    }
+    
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .atlas-logo {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 50%;
+      filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.5)) !important;
     }
     .logo {
       font-size: 2.2rem;
@@ -261,29 +289,52 @@
     }
     .nav-links { 
       display: flex; 
-      gap: 2.5rem; 
+      gap: 0.5rem; 
       font-weight: 500;
-      flex: 1;
-      justify-content: center;
+      align-items: center;
     }
     .nav-links a {
-      padding: 0.5rem 1rem;
-      transition: all 0.3s;
+      padding: 0.4rem 0.8rem;
+      transition: all 0.2s;
       position: relative;
+      color: #b5bac1;
+      font-size: 0.875rem;
+      border-radius: 4px;
+      text-decoration: none;
     }
     .nav-links a:hover {
-      color: #a855f7;
-      text-shadow: 0 0 15px rgba(168, 85, 247, 0.6);
+      color: #dbdee1;
+      background: rgba(168, 85, 247, 0.12);
     }
+    
+    .redeem-btn {
+      background: linear-gradient(135deg, #a855f7, #d946ef);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(168, 85, 247, 0.3);
+    }
+    
+    .redeem-btn:hover {
+      background: linear-gradient(135deg, #8b35d4, #c026d3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+    }
+    
     #nav-auth { display: flex; gap: 0.25rem; align-items: center; }
     .nav-auth-hidden { display: none !important; }
 
     /* Hamburger Menu Button */
     .hamburger-menu {
-      position: fixed;
-      top: 1.5rem;
-      right: 1.5rem;
-      z-index: 11000;
+      position: relative;
+      top: 0;
+      left: 0;
+      z-index: 10110;
       background: rgba(168, 85, 247, 0.1);
       border: 2px solid var(--accent);
       border-radius: 12px;
@@ -297,6 +348,8 @@
       cursor: pointer;
       transition: all 0.3s;
       padding: 0;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
     }
 
     .hamburger-menu.hidden {
@@ -428,6 +481,32 @@
       text-align: center;
     }
 
+    .panel-action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.6rem;
+      grid-column: 1 / -1;
+    }
+
+    .panel-action-btn {
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #d8dbe2;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .panel-action-btn:hover {
+      background: rgba(168, 85, 247, 0.18);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
     .sidebar-badge {
       position: absolute;
       right: 1rem;
@@ -468,6 +547,10 @@
       backdrop-filter: blur(10px);
       z-index: 11000;
       padding: 2rem;
+    }
+
+    .modern-modal.active {
+      display: flex;
     }
 
     /* Modal Tabs */
@@ -1951,7 +2034,7 @@
       inset: -2px;
       border-radius: 22px;
       background: conic-gradient(from 0deg, transparent 0deg, rgba(168, 85, 247, 0.9) 90deg, transparent 180deg, rgba(168, 85, 247, 0.4) 270deg, transparent 360deg);
-      animation: panelGlowSpin 6s linear infinite;
+      animation: none !important;
       z-index: -1;
       filter: blur(2px);
     }
@@ -2836,7 +2919,7 @@
 
     .payment-method-card.selected i {
       color: #00d4ff;
-      animation: pulse 1s infinite;
+      animation: none !important;
     }
 
     @keyframes pulse {
@@ -3105,26 +3188,33 @@
       pointer-events: none;
       z-index: 13000;
       transform: translate(-50%, -50%);
-      transition: transform 0.1s ease-out;
+      will-change: left, top;
+      transition: none;
+      display: block;
+      visibility: visible;
+      left: 0;
+      top: 0;
+      opacity: 1;
     }
 
     .crosshair::before,
     .crosshair::after {
       content: '';
       position: absolute;
-      background: linear-gradient(90deg, #a855f7, #000);
-      box-shadow: 0 0 10px #a855f7;
+      background: linear-gradient(90deg, #a855f7, #d946ef);
+      box-shadow: 0 0 15px #a855f7, 0 0 30px rgba(168, 85, 247, 0.8);
+      z-index: 13001;
     }
 
     .crosshair::before {
-      width: 2px;
+      width: 4px;
       height: 100%;
       left: 50%;
       transform: translateX(-50%);
     }
 
     .crosshair::after {
-      height: 2px;
+      height: 4px;
       width: 100%;
       top: 50%;
       transform: translateY(-50%);
@@ -3132,61 +3222,26 @@
 
     .crosshair-center {
       position: absolute;
-      width: 8px;
-      height: 8px;
-      background: #a855f7;
-      border: 2px solid #000;
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle, #fff 0%, #a855f7 70%);
+      border: 2px solid #a855f7;
       border-radius: 50%;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 10px #a855f7, inset 0 0 5px #fff;
+      transform: translate(-50%, -50%) translateZ(0);
+      box-shadow: 0 0 20px #a855f7, 0 0 40px rgba(168, 85, 247, 0.9), inset 0 0 8px #fff;
+      will-change: auto;
+      z-index: 13002;
     }
 
-    /* Shockwave Animation */
-
-    /* Click Shockwave Effect */
-    .shockwave {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 3px solid #a855f7;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      animation: shockwaveExpand 0.6s ease-out forwards;
-    }
-
-    @keyframes shockwaveExpand {
-      0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-        border-width: 3px;
-      }
-      50% {
-        opacity: 0.6;
-        border-width: 2px;
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(5.3);
-        border-width: 1px;
-      }
-    }
+    /* Shockwave Animation - Removed */
 
   </style>
 </head>
 <body>
   <!-- Hex Grid Background Canvas -->
   <canvas id="hexCanvas"></canvas>
-
-  <!-- Hamburger Menu Button -->
-  <button class="hamburger-menu" id="hamburgerBtn" onclick="toggleSidebar()">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
 
   <!-- Sidebar Menu -->
   <div class="sidebar-menu" id="sidebarMenu">
@@ -3195,23 +3250,15 @@
       <button class="sidebar-close" onclick="toggleSidebar()">×</button>
     </div>
     <div class="sidebar-content">
-      <div class="sidebar-section"><i class="fas fa-layer-group"></i> Panels</div>
-      <a href="#" class="sidebar-item" id="menu-dev-panel" onclick="openDevPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-code"></i>
-        <span>Developer Panel</span>
-      </a>
-      <a href="#" class="sidebar-item" id="menu-head-panel" onclick="openHeadStaffPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-crown"></i>
-        <span>Head Staff Panel</span>
-      </a>
-      <a href="#" class="sidebar-item" id="menu-staff-panel" onclick="openStaffPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-shield-alt"></i>
-        <span>Staff Panel</span>
-      </a>
-      <a href="#" class="sidebar-item" id="menu-owner-panel" onclick="openOwnerPanel(); toggleSidebar();" style="display: none;">
-        <i class="fas fa-crown"></i>
-        <span>Owner Panel</span>
-      </a>
+      <div class="sidebar-section"><i class="fas fa-bolt"></i> Panels</div>
+      <div class="panel-action-grid">
+        <button class="panel-action-btn" type="button">Fly</button>
+        <button class="panel-action-btn" type="button">Godmode</button>
+        <button class="panel-action-btn" type="button">Invisible</button>
+        <button class="panel-action-btn" type="button">Set Health</button>
+        <button class="panel-action-btn" type="button">Set Jump</button>
+        <button class="panel-action-btn" type="button">Set Speed</button>
+      </div>
       <div class="sidebar-section"><i class="fas fa-user"></i> Account</div>
       <a href="#" class="sidebar-item" onclick="openOrderHistory()">
         <i class="fas fa-shopping-bag"></i>
@@ -3248,7 +3295,7 @@
       
       <!-- Content that changes based on login status -->
       <div id="landingLoggedIn" style="display: none;">
-        <button class="landing-btn" onclick="goToStore()">ENTER STORE</button>
+        <button class="landing-btn" onclick="goToStore()">PURCHASE ACCESS</button>
       </div>
       
       <div id="landingLoggedOut">
@@ -3271,55 +3318,24 @@
 
   <header>
     <nav>
-      <img src="atlas_logo.png" class="atlas-logo" alt="Atlasfn Logo" width="100" height="100" style="margin-right: 2px; vertical-align: middle; filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.9)); object-fit: contain; animation: breathingPurple 3s ease-in-out infinite;" onerror="handleLogoError(this)">
-      <span style="display: none; vertical-align: middle; font-family: 'Sora', system-ui, sans-serif; font-size: 1.8rem; background: linear-gradient(180deg, #a855f7 0%, #000 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Atlasfn</span>
+      <button class="hamburger-menu" id="hamburgerBtn" onclick="toggleSidebar()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <div class="nav-links">
-        <a href="#store-section">Store</a>
+        <a href="purchase.html">Purchase</a>
         <a href="#">About</a>
         <a href="#faq">FAQ</a>
         <a href="https://discord.gg/Y6jVxPVV" target="_blank" title="Join our Discord">
           <i class="fab fa-discord"></i> Discord
         </a>
-      </div>
-      <div id="nav-auth">
-        <a href="login.html" target="_blank" style="color: var(--accent); text-decoration: none; padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 8px; transition: all 0.3s;">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </a>
-        <a href="signup.html" target="_blank" style="color: var(--text); text-decoration: none; padding: 0.5rem 1rem; background: var(--accent); color: #000; border-radius: 8px; margin-left: 0.5rem; font-weight: 600; transition: all 0.3s;">
-          <i class="fas fa-user-plus"></i> Sign Up
-        </a>
-      </div>
-      <div id="user-menu" class="user-menu" style="display: none;">
-        <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
-          <span class="user-name" id="user-display"></span>
-          <span style="font-size: 12px; color: #a855f7; padding: 4px 8px; background: rgba(168, 85, 247, 0.2); border-radius: 4px;">💰 $<span id="user-balance">0.00</span></span>
-        </div>
-        <button class="logout-btn" style="font-size: 12px; padding: 6px 12px;" onclick="openAddFundsModal()">+ Add Funds</button>
-        <button class="logout-btn" onclick="logout()">Log Out</button>
+        <button onclick="openRedeemModal()" class="redeem-btn">
+          <i class="fas fa-ticket-alt"></i> Redeem Panel Key
+        </button>
       </div>
     </nav>
   </header>
-
-  <!-- Login Modal -->
-  <div class="auth-modal" id="loginModal">
-    <div class="auth-modal-content">
-      <h2><i class="fas fa-sign-in-alt"></i> Log In</h2>
-      <div class="auth-error" id="loginError"></div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="loginEmail" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="loginPassword" placeholder="Password">
-      </div>
-      <button class="auth-modal-btn" onclick="handleLogin()">Log In</button>
-      <div class="auth-modal-toggle">
-        Don't have an account? <a onclick="switchToSignup()">Sign Up</a>
-      </div>
-      <button class="auth-modal-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); margin-top: 1rem;" onclick="closeModal('loginModal')">Cancel</button>
-    </div>
-  </div>
 
   <!-- Add Funds Modal -->
   <div class="auth-modal" id="addFundsModal">
@@ -3922,35 +3938,6 @@
     </div>
   </div>
 
-  <!-- Signup Modal -->
-  <div class="auth-modal" id="signupModal">
-    <div class="auth-modal-content">
-      <h2><i class="fas fa-user-plus"></i> Sign Up</h2>
-      <div class="auth-error" id="signupError"></div>
-      <div class="form-group">
-        <label>Full Name <span style="color: #888; font-weight: normal;">(optional)</span></label>
-        <input type="text" id="signupName" placeholder="Your Name">
-      </div>
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="signupEmail" placeholder="your@email.com">
-      </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="signupPassword" placeholder="Min 8 chars: 1 uppercase, 1 lowercase, 1 number">
-      </div>
-      <div class="form-group">
-        <label>Confirm Password</label>
-        <input type="password" id="signupConfirm" placeholder="Confirm Password">
-      </div>
-      <button class="auth-modal-btn" onclick="handleSignup()">Create Account</button>
-      <div class="auth-modal-toggle">
-        Already have an account? <a onclick="switchToLogin()">Log In</a>
-      </div>
-      <button class="auth-modal-btn" style="background: transparent; border: 1px solid var(--border); color: var(--text); margin-top: 1rem;" onclick="closeModal('signupModal')">Cancel</button>
-    </div>
-  </div>
-
   <!-- Product Detail Modal -->
   <div class="product-detail-modal" id="productDetailModal">
     <div class="product-detail-content">
@@ -3998,6 +3985,124 @@
     </div>
   </div>
 
+  <!-- Redeem Key Modal -->
+  <div class="modern-modal" id="redeemModal">
+    <div class="modern-modal-content" style="max-width: 450px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-ticket-alt"></i> Redeem Panel Key</h2>
+        <button class="modern-modal-close" onclick="closeRedeemModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Enter your panel access key to unlock your permissions.</p>
+        <div class="form-group">
+          <label>Access Key</label>
+          <input type="text" id="redeemKey" placeholder="ATL_XXXXX_XXXXX" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-family: monospace;">
+        </div>
+        <div id="redeemError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+        <button onclick="redeemPanelKey()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; margin-top: 1.5rem; cursor: pointer;">
+          <i class="fas fa-unlock"></i> Redeem Key
+        </button>
+        <button onclick="openOwnerAccessPrompt()" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 8px; font-size: 0.85rem; margin-top: 0.5rem; cursor: pointer;">
+          <i class="fas fa-crown"></i> Owner? Click here
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Redeem Success Modal -->
+  <div class="modern-modal" id="redeemSuccessModal">
+    <div class="modern-modal-content" style="max-width: 450px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-check-circle"></i> Redeemed Successfully</h2>
+        <button class="modern-modal-close" onclick="closeRedeemSuccessModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Your key has been redeemed. Access granted to <span id="redeemSuccessName" style="color: var(--accent);"></span>.</p>
+        <button onclick="openRedeemPanel()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+          <i class="fas fa-external-link-alt"></i> Open Panel
+        </button>
+        <button onclick="closeRedeemSuccessModal()" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); color: var(--text); border-radius: 8px; font-size: 0.85rem; margin-top: 0.5rem; cursor: pointer;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Owner Access Modal -->
+  <div class="modern-modal" id="accessModal">
+    <div class="modern-modal-content" style="max-width: 450px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-crown"></i> Owner Verification</h2>
+        <button class="modern-modal-close" onclick="closeAccessModal()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <p style="color: #cbd5f5; margin-bottom: 1.5rem;">Enter the owner master password.</p>
+        <div class="form-group">
+          <label>Master Password</label>
+          <input type="password" id="accessPassword" placeholder="Enter master password" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+        </div>
+        <div id="accessError" style="color: #ff6b6b; font-size: 0.9rem; margin-top: 0.5rem; display: none;"></div>
+        <button onclick="verifyOwnerPassword()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; margin-top: 1.5rem; cursor: pointer;">
+          <i class="fas fa-lock-open"></i> Unlock Owner Panel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Owner Panel Modal -->
+  <div class="modern-modal" id="ownerPanelModal">
+    <div class="modern-modal-content" style="max-width: 600px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-crown"></i> Owner Control Panel</h2>
+        <button class="modern-modal-close" onclick="closeOwnerPanel()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <div class="modern-modal-tabs" style="margin-bottom: 2rem;">
+          <button class="modal-tab active" onclick="switchOwnerTab('generate')">Generate Keys</button>
+          <button class="modal-tab" onclick="switchOwnerTab('manage')">Manage Keys</button>
+        </div>
+
+        <!-- Generate Tab -->
+        <div id="generateTab" class="support-tab-content active">
+          <h3 style="margin-bottom: 1rem; color: var(--accent);">Generate Access Key</h3>
+          <div class="form-group">
+            <label>Panel Name</label>
+            <input type="text" id="panelName" placeholder="e.g., Developer Panel, Admin Panel" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+          </div>
+          <div class="form-group">
+            <label>Key Type</label>
+            <select id="keyType" style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+              <option value="admin">Admin (Full Access)</option>
+              <option value="moderator">Moderator (Limited Access)</option>
+              <option value="viewer">Viewer (Read-Only)</option>
+              <option value="custom">Custom Permission</option>
+            </select>
+          </div>
+          <button onclick="generateKey()" style="width: 100%; padding: 1rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; margin-top: 1rem;">
+            <i class="fas fa-plus"></i> Generate Key
+          </button>
+          <div id="generatedKeyDisplay" style="margin-top: 1.5rem; padding: 1rem; background: #0a0a0c; border: 1px solid #a855f7; border-radius: 8px; display: none;">
+            <p style="color: #888; font-size: 0.9rem; margin-bottom: 0.5rem;">Generated Key:</p>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="generatedKeyValue" readonly style="flex: 1; padding: 0.8rem; background: #16161a; border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-family: monospace; font-size: 0.85rem;">
+              <button onclick="copyToClipboard('generatedKeyValue')" style="padding: 0.8rem 1rem; background: #a855f7; border: none; border-radius: 6px; color: #fff; cursor: pointer;">
+                <i class="fas fa-copy"></i> Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manage Tab -->
+        <div id="manageTab" class="support-tab-content">
+          <h3 style="margin-bottom: 1rem; color: var(--accent);">Active Keys</h3>
+          <div id="keysList" style="max-height: 400px; overflow-y: auto;">
+            <p style="text-align: center; color: #888; padding: 2rem;">No keys generated yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Order History Modal -->
   <div class="modern-modal" id="orderHistoryModal">
     <div class="modern-modal-content">
@@ -4021,6 +4126,7 @@
       <div class="modern-modal-tabs">
         <button class="modal-tab active" onclick="switchSupportTab('tickets')">My Tickets</button>
         <button class="modal-tab" onclick="switchSupportTab('new')">Create Ticket</button>
+        <button class="modal-tab" id="allTicketsTab" onclick="switchSupportTab('all')" style="display: none;">All Tickets <span id="staffTicketBadge" style="background: #ff6b6b; color: #fff; border-radius: 50%; padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-left: 0.5rem; display: none;"></span></button>
       </div>
       <div class="modern-modal-body">
         <div id="ticketsTab" class="support-tab-content active">
@@ -4051,6 +4157,45 @@
             </button>
           </form>
         </div>
+        <div id="allTicketsTab" class="support-tab-content">
+          <div id="allTicketsList">
+            <p style="text-align: center; color: #888; padding: 2rem;">No tickets yet.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket Chat Modal -->
+  <div class="modern-modal" id="ticketChatModal">
+    <div class="modern-modal-content" style="max-width: 700px;">
+      <div class="modern-modal-header">
+        <h2><i class="fas fa-comments"></i> Ticket #<span id="chatTicketId"></span></h2>
+        <button class="modern-modal-close" onclick="closeTicketChat()">×</button>
+      </div>
+      <div class="modern-modal-body">
+        <div style="background: #0a0a0c; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent);" id="chatTicketSubject"></h3>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+            <span class="ticket-status" id="chatTicketStatus"></span>
+            <span class="ticket-priority" id="chatTicketPriority"></span>
+          </div>
+          <small style="color: #888;" id="chatTicketDate"></small>
+        </div>
+        <div id="ticketMessagesContainer" style="max-height: 400px; overflow-y: auto; margin-bottom: 1rem; padding: 1rem; background: #16161a; border-radius: 8px;">
+          <!-- Messages will be loaded here -->
+        </div>
+        <form id="ticketReplyForm" onsubmit="sendTicketMessage(event)" style="display: flex; gap: 0.5rem;">
+          <input type="text" id="ticketReplyInput" placeholder="Type your message..." required style="flex: 1; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text);">
+          <button type="submit" style="padding: 0.8rem 1.5rem; background: linear-gradient(135deg, #a855f7, #d946ef); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-paper-plane"></i> Send
+          </button>
+        </form>
+        <div id="ticketCloseSection" style="margin-top: 1rem; display: none;">
+          <button onclick="closeTicketByStaff()" style="width: 100%; padding: 0.8rem; background: #ff6b6b; border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer;">
+            <i class="fas fa-times-circle"></i> Close Ticket
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -4060,165 +4205,68 @@
     <p>Choose your access duration and complete checkout securely in minutes.</p>
   </section>
 
-  <div class="container">
-    <div class="payment-section" id="store-section">
-      <h2>Access Key Store</h2>
-      <p>Select your access duration and checkout securely.</p>
-
-      <div class="payment-container" id="store-cards">
-        <div class="product-card" onclick="openProductDetail('1_day')">
-          <div class="product-card-badge">In Stock</div>
-          <div class="product-card-image">
-            <i class="fas fa-key"></i>
-          </div>
-          <h3 class="product-card-title">1 Day Access</h3>
-          <div class="product-card-price">$3.99</div>
-          <p class="product-card-desc">24-hour access to Atlas FN</p>
+  <section class="payment-section" id="purchase">
+    <div class="container">
+      <h2 style="font-size: 2.5rem; margin-bottom: 1rem; text-align: center;">Choose Your Access</h2>
+      <p style="text-align: center; color: #a06aff; margin-bottom: 2.5rem;">Select your preferred duration and checkout securely</p>
+      
+      <div class="payment-container">
+        <div class="product-card" onclick="goToProductCheckout('test')" style="cursor: pointer;">
+          <div class="product-card-badge">Test</div>
+          <div class="product-card-image"><i class="fas fa-flask"></i></div>
+          <div class="product-card-title">Test Purchase</div>
+          <div class="product-card-price">$0.50</div>
+          <div class="product-card-desc">Test the payment system</div>
+          <button class="btn-pay" type="button">Select Plan</button>
         </div>
-
-        <div class="product-card" onclick="openProductDetail('1_week')">
-          <div class="product-card-badge">In Stock</div>
-          <div class="product-card-image">
-            <i class="fas fa-key"></i>
-          </div>
-          <h3 class="product-card-title">1 Week Access</h3>
-          <div class="product-card-price">$9.99</div>
-          <p class="product-card-desc">7 days of unrestricted access</p>
-        </div>
-
-        <div class="product-card" onclick="openProductDetail('1_month')">
-          <div class="product-card-badge">In Stock</div>
-          <div class="product-card-image">
-            <i class="fas fa-key"></i>
-          </div>
-          <h3 class="product-card-title">1 Month Access</h3>
-          <div class="product-card-price">$19.99</div>
-          <p class="product-card-desc">30 days of full features</p>
-        </div>
-
-        <div class="product-card" onclick="openProductDetail('3_months')">
-          <div class="product-card-badge">Popular</div>
-          <div class="product-card-image">
-            <i class="fas fa-crown"></i>
-          </div>
-          <h3 class="product-card-title">3 Months Access</h3>
-          <div class="product-card-price">$39.99</div>
-          <p class="product-card-desc">90 days of premium access</p>
-        </div>
-
-        <div class="product-card" onclick="openProductDetail('lifetime')">
-          <div class="product-card-badge">Best Value</div>
-          <div class="product-card-image">
-            <i class="fas fa-star"></i>
-          </div>
-          <h3 class="product-card-title">Lifetime Access</h3>
-          <div class="product-card-price">$99.99</div>
-          <p class="product-card-desc">Unlimited access forever</p>
-        </div>
-      </div>
-
-      <div class="payment-form-container" id="store-view" style="display: none;">
-        <h3 style="margin-bottom: 1.5rem; color: var(--accent);">Choose Access Duration</h3>
-
-        <div class="form-group">
-          <label for="access-duration">Access Length <span style="color: #ff6b6b;">*</span></label>
-          <select id="access-duration" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-size: 1rem;">
-            <option value="test">Test Purchase - $0.50</option>
-            <option value="1_day">1 day - $3.99</option>
-            <option value="1_week">1 week - $9.99</option>
-            <option value="1_month">1 month - $19.99</option>
-            <option value="3_months">3 months - $39.99</option>
-            <option value="lifetime">Lifetime - $99.99</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="access-amount">Price (USD) <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="access-amount" readonly>
-        </div>
-
-        <h4 style="margin: 2rem 0 1rem; color: var(--text); font-size: 1.1rem;">Contact Details</h4>
-
-        <div class="form-group">
-          <label for="donor-name">Full Name <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="donor-name" placeholder="John Doe" required>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-email">Email Address <span style="color: #ff6b6b;">*</span></label>
-          <input type="email" id="donor-email" placeholder="your@email.com" required>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-phone">Phone Number <span style="color: #888; font-weight: normal;">(optional)</span></label>
-          <input type="tel" id="donor-phone" placeholder="+1 (555) 123-4567">
-        </div>
-
-        <h4 style="margin: 2rem 0 1rem; color: var(--text); font-size: 1.1rem;">Billing Address</h4>
-
-        <div class="form-group">
-          <label for="donor-address">Street Address <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="donor-address" placeholder="123 Main Street" required>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-city">City <span style="color: #ff6b6b;">*</span></label>
-          <input type="text" id="donor-city" placeholder="New York" required>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-          <div class="form-group">
-            <label for="donor-state">State/Province <span style="color: #ff6b6b;">*</span></label>
-            <input type="text" id="donor-state" placeholder="NY" required>
-          </div>
-
-          <div class="form-group">
-            <label for="donor-zip">Zip/Postal Code <span style="color: #ff6b6b;">*</span></label>
-            <input type="text" id="donor-zip" placeholder="10001" required>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="donor-country">Country <span style="color: #ff6b6b;">*</span></label>
-          <select id="donor-country" required style="width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; background: #0a0a0c; color: var(--text); font-size: 1rem;">
-            <option value="US">United States</option>
-            <option value="CA">Canada</option>
-            <option value="GB">United Kingdom</option>
-            <option value="AU">Australia</option>
-            <option value="DE">Germany</option>
-            <option value="FR">France</option>
-            <option value="IT">Italy</option>
-            <option value="ES">Spain</option>
-            <option value="MX">Mexico</option>
-            <option value="BR">Brazil</option>
-            <option value="JP">Japan</option>
-            <option value="CN">China</option>
-            <option value="IN">India</option>
-            <option value="OTHER">Other</option>
-          </select>
-        </div>
-
-        <h4 style="margin: 2rem 0 1rem; color: var(--text); font-size: 1.1rem;">Payment Method</h4>
-
-        <div class="form-group">
-          <label for="card-element">Card Details <span style="color: #ff6b6b;">*</span></label>
-          <div id="card-element"></div>
-          <p style="font-size: 0.85rem; color: #888; margin-top: 0.5rem;">
-            <i class="fas fa-lock"></i> Secure payment powered by Stripe
-          </p>
-        </div>
-
-        <button id="pay-button" class="btn-pay" style="width: 100%;">
-          <i class="fas fa-credit-card"></i> Purchase Access Key
-        </button>
-        <div id="payment-message" style="margin-top: 1rem; color: #aaa;"></div>
         
-        <p style="font-size: 0.8rem; color: #666; margin-top: 1rem; text-align: center;">
-          <span style="color: #ff6b6b;">*</span> Required fields
-        </p>
+        <div class="product-card" onclick="goToProductCheckout('1_day')" style="cursor: pointer;">
+          <div class="product-card-badge">In Stock</div>
+          <div class="product-card-image"><i class="fas fa-key"></i></div>
+          <div class="product-card-title">1 Day Access</div>
+          <div class="product-card-price">$3.99</div>
+          <div class="product-card-desc">24-hour access to all features</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('1_week')" style="cursor: pointer;">
+          <div class="product-card-badge">In Stock</div>
+          <div class="product-card-image"><i class="fas fa-key"></i></div>
+          <div class="product-card-title">1 Week Access</div>
+          <div class="product-card-price">$9.99</div>
+          <div class="product-card-desc">7 days of full access</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('1_month')" style="cursor: pointer;">
+          <div class="product-card-badge">In Stock</div>
+          <div class="product-card-image"><i class="fas fa-key"></i></div>
+          <div class="product-card-title">1 Month Access</div>
+          <div class="product-card-price">$19.99</div>
+          <div class="product-card-desc">30 days with premium support</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('3_months')" style="cursor: pointer;">
+          <div class="product-card-badge">Popular</div>
+          <div class="product-card-image"><i class="fas fa-crown"></i></div>
+          <div class="product-card-title">3 Months Access</div>
+          <div class="product-card-price">$39.99</div>
+          <div class="product-card-desc">90 days of premium access</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
+        
+        <div class="product-card" onclick="goToProductCheckout('lifetime')" style="cursor: pointer;">
+          <div class="product-card-badge">Best Value</div>
+          <div class="product-card-image"><i class="fas fa-star"></i></div>
+          <div class="product-card-title">Lifetime Access</div>
+          <div class="product-card-price">$99.99</div>
+          <div class="product-card-desc">Unlimited access forever</div>
+          <button class="btn-pay" type="button">Select Plan</button>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <section class="faq-section" id="faq">
     <div class="container">
@@ -4336,18 +4384,27 @@
   <script src="https://js.stripe.com/v3/"></script>
 
   <script>
+    // ====== PRODUCTS DISPLAY ======
+    function goToProductCheckout(productKey) {
+      localStorage.setItem('selectedProduct', productKey);
+      window.location.href = 'purchase.html?product=' + productKey;
+    }
+
+    console.log('✅ Atlas FN loaded');
+
     // ====== STRIPE CONFIGURATION ======
     // IMPORTANT: Paste your Stripe keys from https://dashboard.stripe.com/apikeys
     const STRIPE_CONFIG = {
       // Your Stripe Publishable Key (starts with pk_test_ or pk_live_)
-      publishableKey: 'pk_test_YOUR_PUBLISHABLE_KEY_HERE',
+      publishableKey: 'pk_live_51T2ZQBCOhVW1Fv0S9OFkNFyPbHp3qZSifECjfOyNVCV1EAxAxRe2BxYx62gu4k08AWvf6Jos2UbHEZS2AXbbSlox00kVF5dmSr',
       
-      // Your Stripe Secret Key (starts with sk_test_ or sk_live_)
-      // NOTE: In production, NEVER put secret keys in client-side code
-      // Use a backend server instead
-      secretKey: 'sk_test_YOUR_SECRET_KEY_HERE',
+      // ⚠️ SECURITY WARNING: NEVER PUT YOUR SECRET KEY HERE! ⚠️
+      // Secret keys (sk_live_...) must ONLY be used on a secure backend server
+      // Putting them in HTML/JavaScript exposes them to anyone who views your site
+      // For real payments, you MUST create a backend API endpoint
+      secretKey: '', // DO NOT PUT SECRET KEY HERE - USE BACKEND SERVER ONLY
       
-      isTestMode: true
+      isTestMode: false // Set to true for testing with test keys
     };
 
     let stripe = null;
@@ -4374,11 +4431,8 @@
     
     // Check if user is developer
     function isDevUser() {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
-      if (!currentUser) return false;
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
-      return user && user.isDev;
+      const flags = getCurrentUserFlags();
+      return !!flags.isDev;
     }
     
     // Update test purchase option visibility
@@ -4749,29 +4803,40 @@ For support, contact: support@atlasfn.com
         }
       },
 
-      // Create Stripe Payment Intent
+      // Create Stripe Payment Intent (via secure Vercel Function)
       async createStripePaymentIntent(amount, transactionId) {
         try {
-          // In production, this should be done server-side
-          // For now, using client-side (NOT SECURE - for demo only)
-          const formData = new FormData();
-          formData.append('amount', Math.round(amount * 100)); // Convert to cents
-          formData.append('currency', 'usd');
-          formData.append('description', `Atlas FN Purchase - ${transactionId}`);
-          formData.append('metadata[transaction_id]', transactionId);
+          console.log('💳 Creating payment intent via secure serverless function...');
+          
+          // Call our secure Vercel serverless function
+          const response = await fetch('/api/create-payment-intent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              amount: Math.round(amount * 100), // Convert to cents
+              currency: 'usd',
+              description: `Atlas FN Purchase - ${transactionId}`,
+              metadata: {
+                transaction_id: transactionId,
+                timestamp: new Date().toISOString()
+              }
+            })
+          });
 
-          // NOTE: This is a demo approach
-          // In production, you MUST use a secure backend to handle this
-          // Example backend endpoint would be: https://your-backend.com/create-payment-intent
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to create payment intent');
+          }
+
+          const data = await response.json();
+          console.log('✅ Payment intent created successfully');
           
-          console.log('⚠️  In production, create payment intents server-side.');
-          
-          // For demo: Return a mock client secret
-          // In real use, your backend would call Stripe API and return actual client secret
-          return 'pi_test_' + Date.now() + '_secret_' + Math.random().toString(36).substr(2, 9);
+          return data.clientSecret;
         } catch (error) {
-          console.error('Payment intent creation error:', error);
-          return null;
+          console.error('❌ Payment intent creation error:', error);
+          throw new Error('Unable to process payment. Please try again.');
         }
       },
 
@@ -4887,19 +4952,15 @@ For support, contact: support@atlasfn.com
     }
 
     function goToStore() {
-      const landingPage = document.getElementById('landingPage');
-      landingPage.classList.add('hidden');
-      setTimeout(() => {
-        document.getElementById('store-section').scrollIntoView({ behavior: 'smooth' });
-      }, 500);
+      window.location.href = 'purchase.html';
     }
 
     function openLoginFromLanding() {
-      window.open('login.html', '_blank');
+      showToast('Login is disabled on this site.', 'info');
     }
 
     function openSignupFromLanding() {
-      window.open('signup.html', '_blank');
+      showToast('Signup is disabled on this site.', 'info');
     }
 
     // Initialize landing page on load
@@ -4907,11 +4968,6 @@ For support, contact: support@atlasfn.com
       // Initialize custom payment system
       if (typeof paymentSystem !== 'undefined') {
         paymentSystem.init();
-      }
-      
-      // Initialize payout system
-      if (typeof payoutSystem !== 'undefined') {
-        payoutSystem.init();
       }
       
       // Landing page disabled - skip checkLandingPageAuth();
@@ -4980,6 +5036,235 @@ For support, contact: support@atlasfn.com
       document.body.style.overflow = 'hidden';
     }
 
+    // ===== OWNER ACCESS SYSTEM =====
+    const ownerPassword = 'Atl4s$Pr0_Ow9r#2026!SecureK3y';
+    const panelKeys = {};
+
+    function openRedeemModal() {
+      document.getElementById('redeemModal').classList.add('active');
+      document.getElementById('redeemKey').value = '';
+      document.getElementById('redeemError').style.display = 'none';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRedeemModal() {
+      document.getElementById('redeemModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function openRedeemSuccess(panelName) {
+      const nameEl = document.getElementById('redeemSuccessName');
+      if (nameEl) nameEl.textContent = panelName || 'your panel';
+      document.getElementById('redeemSuccessModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRedeemSuccessModal() {
+      document.getElementById('redeemSuccessModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function openRedeemPanel() {
+      closeRedeemSuccessModal();
+      window.open('panel.html', '_blank');
+    }
+
+    function openOwnerAccessPrompt() {
+      closeRedeemModal();
+      setTimeout(() => openAccessModal(), 100);
+    }
+
+    function openAccessModal() {
+      document.getElementById('accessModal').classList.add('active');
+      document.getElementById('accessPassword').value = '';
+      document.getElementById('accessError').style.display = 'none';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAccessModal() {
+      document.getElementById('accessModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function redeemPanelKey() {
+      const key = document.getElementById('redeemKey').value.trim();
+      const errorEl = document.getElementById('redeemError');
+      
+      const stored = localStorage.getItem('ownerPanelKeys');
+      const keys = stored ? JSON.parse(stored) : {};
+      
+      if (keys[key] && keys[key].active) {
+        closeRedeemModal();
+        // Store the redeemed key for the user
+        localStorage.setItem('userActiveKey', JSON.stringify({
+          key: key,
+          panel: keys[key].name,
+          type: keys[key].type,
+          redeemedAt: new Date().toLocaleString()
+        }));
+        
+        // Show staff ticket tab if applicable
+        checkStaffAccess();
+        openRedeemSuccess(keys[key].name);
+      } else {
+        errorEl.textContent = 'Invalid or inactive key';
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function checkStaffAccess() {
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      const allTicketsTab = document.getElementById('allTicketsTab');
+      
+      if (userKey && ['admin', 'moderator', 'custom'].includes(userKey.type)) {
+        // Show staff ticket tab
+        if (allTicketsTab) allTicketsTab.style.display = 'block';
+        updateStaffTicketBadge();
+      } else {
+        if (allTicketsTab) allTicketsTab.style.display = 'none';
+      }
+    }
+
+    // Check staff access on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      checkStaffAccess();
+    });
+
+    function verifyOwnerPassword() {
+      const password = document.getElementById('accessPassword').value;
+      const errorEl = document.getElementById('accessError');
+      
+      if (password === ownerPassword) {
+        closeAccessModal();
+        loadOwnerPanel();
+        openOwnerPanel();
+      } else {
+        errorEl.textContent = 'Incorrect password';
+        errorEl.style.display = 'block';
+      }
+    }
+
+    function openOwnerPanel() {
+      document.getElementById('ownerPanelModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOwnerPanel() {
+      document.getElementById('ownerPanelModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function switchOwnerTab(tabName) {
+      // Hide all tabs
+      document.getElementById('generateTab').classList.remove('active');
+      document.getElementById('manageTab').classList.remove('active');
+      
+      // Show selected tab
+      document.getElementById(tabName + 'Tab').classList.add('active');
+      
+      // Update active button
+      const buttons = document.querySelectorAll('.modal-tab');
+      buttons.forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+
+    function generateKey() {
+      const panelName = document.getElementById('panelName').value.trim();
+      const keyType = document.getElementById('keyType').value;
+      
+      if (!panelName) {
+        showToast('Please enter a panel name', 'error');
+        return;
+      }
+      
+      // Generate a random key
+      const key = 'ATL_' + Math.random().toString(36).substr(2, 9).toUpperCase() + '_' + Date.now().toString(36).toUpperCase();
+      
+      panelKeys[key] = {
+        name: panelName,
+        type: keyType,
+        created: new Date().toLocaleString(),
+        active: true
+      };
+      
+      localStorage.setItem('ownerPanelKeys', JSON.stringify(panelKeys));
+      
+      // Display the generated key
+      document.getElementById('generatedKeyValue').value = key;
+      document.getElementById('generatedKeyDisplay').style.display = 'block';
+      
+      // Clear form
+      document.getElementById('panelName').value = '';
+      document.getElementById('keyType').value = 'admin';
+      
+      showToast('Key generated successfully!', 'success');
+      updateKeysList();
+    }
+
+    function loadOwnerPanel() {
+      const stored = localStorage.getItem('ownerPanelKeys');
+      if (stored) {
+        Object.assign(panelKeys, JSON.parse(stored));
+      }
+      updateKeysList();
+    }
+
+    function updateKeysList() {
+      const keysList = document.getElementById('keysList');
+      const keys = Object.entries(panelKeys);
+      
+      if (keys.length === 0) {
+        keysList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No keys generated yet.</p>';
+        return;
+      }
+      
+      keysList.innerHTML = keys.map(([key, data]) => `
+        <div style="padding: 1rem; background: #0a0a0c; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+            <div>
+              <p style="color: var(--accent); font-weight: 600; margin: 0;">${data.name}</p>
+              <p style="color: #888; font-size: 0.85rem; margin: 0.25rem 0 0 0;">Type: ${data.type} | Created: ${data.created}</p>
+            </div>
+            <button onclick="deleteKey('${key}')" style="padding: 0.5rem 1rem; background: #ff6b6b; border: none; border-radius: 6px; color: #fff; cursor: pointer; font-size: 0.85rem;">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" readonly value="${key}" style="flex: 1; padding: 0.6rem; background: #16161a; border: 1px solid var(--border); border-radius: 6px; color: var(--accent); font-family: monospace; font-size: 0.8rem;">
+            <button onclick="copyToClipboard_key('${key}')" style="padding: 0.6rem 1rem; background: #a855f7; border: none; border-radius: 6px; color: #fff; cursor: pointer;">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteKey(key) {
+      if (confirm('Are you sure you want to delete this key?')) {
+        delete panelKeys[key];
+        localStorage.setItem('ownerPanelKeys', JSON.stringify(panelKeys));
+        updateKeysList();
+        showToast('Key deleted', 'success');
+      }
+    }
+
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      element.select();
+      document.execCommand('copy');
+      showToast('Copied to clipboard!', 'success');
+    }
+
+    function copyToClipboard_key(key) {
+      const temp = document.createElement('textarea');
+      temp.value = key;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showToast('Key copied!', 'success');
+    }
+
     function closeProductDetail() {
       document.getElementById('productDetailModal').classList.remove('active');
       document.body.style.overflow = '';
@@ -5020,11 +5305,26 @@ For support, contact: support@atlasfn.com
     }
 
     function buyNow() {
-      // Store selected variant in sessionStorage and redirect to checkout page
+      // Select the variant and scroll to payment form
       const variant = selectedVariant || '1_day';
-      sessionStorage.setItem('selectedProduct', variant);
+      
+      // Set the selected product in the dropdown
+      const accessSelect = document.getElementById('access-duration');
+      if (accessSelect) {
+        accessSelect.value = variant;
+        updateAccessPrice();
+      }
+      
       closeProductDetail();
-      window.open('checkout.html', '_blank');
+      
+      // Scroll to the store/payment section
+      const storeView = document.getElementById('store-view');
+      if (storeView) {
+        storeView.style.display = 'block';
+        storeView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      
+      showToast('Ready to checkout! Fill in your details below.', 'success');
     }
 
     function updateAccessPrice() {
@@ -5081,7 +5381,9 @@ For support, contact: support@atlasfn.com
       }
     }
 
-    document.getElementById('pay-button').addEventListener('click', async (e) => {
+    const payButton = document.getElementById('pay-button');
+    if (payButton) {
+      payButton.addEventListener('click', async (e) => {
       e.preventDefault();
 
       // Get all form values
@@ -5159,7 +5461,8 @@ For support, contact: support@atlasfn.com
 
       // Process payment directly with card
       proceedWithPayment();
-    });
+      });
+    }
 
     // Proceed with payment after method selection
     async function proceedWithPayment() {
@@ -5256,6 +5559,165 @@ For support, contact: support@atlasfn.com
       return div.innerHTML;
     }
 
+    function getCurrentUserProfile() {
+      return JSON.parse(localStorage.getItem('currentUserProfile') || 'null');
+    }
+
+    function saveCurrentUserProfile(profile) {
+      localStorage.setItem('currentUserProfile', JSON.stringify(profile));
+    }
+
+    function clearCurrentUserProfile() {
+      localStorage.removeItem('currentUserProfile');
+    }
+
+    function getRoleFlags(profile) {
+      const permissions = Array.isArray(profile && profile.permissions) ? profile.permissions : [];
+      const role = profile && profile.role ? profile.role : '';
+      const isDev = role === 'dev' || permissions.includes('dev');
+      const isHeadStaff = role === 'head_staff' || permissions.includes('head_staff');
+      const isStaff = role === 'staff' || permissions.includes('staff') || isHeadStaff || isDev;
+      return { isDev, isStaff, isHeadStaff };
+    }
+
+    function getCurrentUserFlags() {
+      const profile = getCurrentUserProfile();
+      if (profile) {
+        return getRoleFlags(profile);
+      }
+
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!currentUser) {
+        return { isDev: false, isStaff: false, isHeadStaff: false };
+      }
+
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const fullUser = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
+      return {
+        isDev: !!(fullUser && fullUser.isDev),
+        isStaff: !!(fullUser && fullUser.isStaff),
+        isHeadStaff: !!(fullUser && fullUser.isHeadStaff)
+      };
+    }
+
+    function syncCurrentUserToLocal(profile) {
+      if (!profile) return;
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const flags = getRoleFlags(profile);
+      const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+      if (!currentUser) return;
+
+      const userIndex = users.findIndex(u => u.id === currentUser.id || u.email === currentUser.email);
+      const updated = {
+        id: currentUser.id,
+        name: profile.username || currentUser.name || 'User',
+        email: profile.email || currentUser.email,
+        createdAt: profile.created_at || new Date().toISOString(),
+        isDev: flags.isDev,
+        isStaff: flags.isStaff,
+        isHeadStaff: flags.isHeadStaff
+      };
+
+      if (userIndex === -1) {
+        users.push(updated);
+      } else {
+        users[userIndex] = { ...users[userIndex], ...updated };
+      }
+
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function buildProfileUpdatesFromFlags(flags) {
+      const permissions = [];
+      if (flags.isStaff) permissions.push('staff');
+      if (flags.isHeadStaff) permissions.push('head_staff');
+      if (flags.isDev) permissions.push('dev');
+
+      let role = 'customer';
+      if (flags.isDev) {
+        role = 'dev';
+      } else if (flags.isHeadStaff) {
+        role = 'head_staff';
+      } else if (flags.isStaff) {
+        role = 'staff';
+      }
+
+      return { role, permissions };
+    }
+
+    async function updateCurrentUserProfileOnServer(updates) {
+      const token = localStorage.getItem('authToken');
+      if (!token) return false;
+
+      try {
+        const response = await fetch('/api/auth/user', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(updates)
+        });
+
+        if (!response.ok) {
+          return false;
+        }
+
+        const data = await response.json();
+        if (data && data.user) {
+          saveCurrentUserProfile(data.user);
+          syncCurrentUserToLocal(data.user);
+          updatePanelMenuVisibility();
+        }
+
+        return true;
+      } catch (error) {
+        console.error('Profile update error:', error);
+        return false;
+      }
+    }
+
+    async function fetchCurrentUserProfile() {
+      const token = localStorage.getItem('authToken');
+      if (!token) return null;
+
+      try {
+        const response = await fetch('/api/auth/user', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          clearCurrentUserProfile();
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('currentUser');
+          return null;
+        }
+
+        const data = await response.json();
+        if (data && data.user) {
+          saveCurrentUserProfile(data.user);
+          syncCurrentUserToLocal(data.user);
+          localStorage.setItem('currentUser', JSON.stringify({
+            id: data.user.id,
+            name: data.user.username,
+            email: data.user.email
+          }));
+          updatePanelMenuVisibility();
+          updateTestOptionVisibility();
+          updateNavBar({ name: data.user.username || data.user.email });
+          return data.user;
+        }
+
+        return null;
+      } catch (error) {
+        console.error('Profile fetch error:', error);
+        return null;
+      }
+    }
+
     let actionModalHandler = null;
     let banRequestTarget = null;
     let focusedBanRequestId = null;
@@ -5268,8 +5730,12 @@ For support, contact: support@atlasfn.com
       integrityCheck: true
     };
 
+    function isTestModeActive() {
+      return sessionStorage.getItem('testModeActive') === 'true';
+    }
+
     function showPrivacyOverlay(message) {
-      if (isDevUser()) return;
+      if (isDevUser() || isTestModeActive()) return;
       const overlay = document.getElementById('privacyOverlay');
       const messageEl = document.getElementById('privacyMessage');
       if (!overlay) return;
@@ -5284,14 +5750,14 @@ For support, contact: support@atlasfn.com
     function setupPrivacyGuards() {
       if (privacyConfig.blockContextMenu) {
         document.addEventListener('contextmenu', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           event.preventDefault();
         });
       }
 
       if (privacyConfig.blockSelection) {
         document.addEventListener('selectstart', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           if (event.target && event.target.closest && event.target.closest('input, textarea')) {
             return;
           }
@@ -5299,14 +5765,17 @@ For support, contact: support@atlasfn.com
         });
 
         document.addEventListener('dragstart', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           event.preventDefault();
         });
       }
 
       if (privacyConfig.blockHotkeys) {
         document.addEventListener('keydown', (event) => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
+          if (typeof event.key !== 'string') {
+            return;
+          }
           const key = event.key.toLowerCase();
           const ctrl = event.ctrlKey || event.metaKey;
           const shift = event.shiftKey;
@@ -5322,7 +5791,7 @@ For support, contact: support@atlasfn.com
       if (privacyConfig.devtoolsOverlay) {
         const threshold = 160;
         setInterval(() => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           const widthGap = window.outerWidth - window.innerWidth;
           const heightGap = window.outerHeight - window.innerHeight;
           if (widthGap > threshold || heightGap > threshold) {
@@ -5339,7 +5808,7 @@ For support, contact: support@atlasfn.com
         };
 
         setInterval(() => {
-          if (isDevUser()) return;
+          if (isDevUser() || isTestModeActive()) return;
           if (baseline.handleSignup !== (typeof handleSignup === 'function' ? handleSignup.toString() : '')) {
             showPrivacyOverlay('Integrity check failed. Please refresh.');
           }
@@ -5739,20 +6208,19 @@ For support, contact: support@atlasfn.com
         return;
       }
 
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const fullUser = users.find(u => u.id === currentUser.id || u.email === currentUser.email);
-
-      if (fullUser) {
-        document.getElementById('menu-dev-panel').style.display = fullUser.isDev ? 'flex' : 'none';
-        document.getElementById('menu-head-panel').style.display = fullUser.isHeadStaff ? 'flex' : 'none';
-        document.getElementById('menu-staff-panel').style.display = fullUser.isStaff ? 'flex' : 'none';
-        document.getElementById('menu-owner-panel').style.display = (fullUser.isDev && fullUser.email === 'elijahstech09@gmail.com') ? 'flex' : 'none';
-        console.log('📋 Panel Menu Updated:', { isDev: fullUser.isDev, isStaff: fullUser.isStaff, isHeadStaff: fullUser.isHeadStaff });
-      }
+      const flags = getCurrentUserFlags();
+      document.getElementById('menu-dev-panel').style.display = flags.isDev ? 'flex' : 'none';
+      document.getElementById('menu-head-panel').style.display = flags.isHeadStaff ? 'flex' : 'none';
+      document.getElementById('menu-staff-panel').style.display = flags.isStaff ? 'flex' : 'none';
+      document.getElementById('menu-owner-panel').style.display = (flags.isDev && currentUser.email === 'elijahstech09@gmail.com') ? 'flex' : 'none';
+      console.log('📋 Panel Menu Updated:', { isDev: flags.isDev, isStaff: flags.isStaff, isHeadStaff: flags.isHeadStaff });
     }
 
     // Initialize default dev account
     async function initializeDevAccount() {
+      if (localStorage.getItem('authToken')) {
+        return;
+      }
       const users = JSON.parse(localStorage.getItem('users') || '[]');
       
       // Check if dev account already exists
@@ -5790,6 +6258,9 @@ For support, contact: support@atlasfn.com
     // Check if user is logged in on page load
     window.addEventListener('DOMContentLoaded', async () => {
       await initializeDevAccount();
+      if (localStorage.getItem('authToken')) {
+        await fetchCurrentUserProfile();
+      }
       checkAccessRestrictions();
       setLogoBackground();
       setupPrivacyGuards();
@@ -5797,17 +6268,8 @@ For support, contact: support@atlasfn.com
       updateTestOptionVisibility();
       updatePanelMenuVisibility();
       
-      // Check if user is logged in and update UI accordingly
-      const currentUser = localStorage.getItem('currentUser');
-      if (currentUser) {
-        updateNavBar(JSON.parse(currentUser));
-        updateTestOptionVisibility();
-      } else {
-        // Show login/signup buttons when not logged in
-        document.getElementById('nav-auth').style.display = 'flex';
-        document.getElementById('user-menu').style.display = 'none';
-      }
-      
+      // Auth UI removed
+
       // Landing page disabled - directly accessible
     });
 
@@ -5850,10 +6312,13 @@ For support, contact: support@atlasfn.com
 
     function openStaffPanel() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id);
+      if (!currentUser) {
+        showToast('Access denied. Staff privileges required.', 'error');
+        return;
+      }
 
-      if (!user || !user.isStaff) {
+      const flags = getCurrentUserFlags();
+      if (!flags.isStaff) {
         showToast('Access denied. Staff privileges required.', 'error');
         return;
       }
@@ -6067,227 +6532,39 @@ For support, contact: support@atlasfn.com
       });
     }
 
-    // Open signup modal
     function openSignupModal() {
-      closeModal('loginModal');
-      document.getElementById('signupModal').classList.add('active');
-      document.getElementById('signupEmail').focus();
+      showToast('Signup is disabled on this site.', 'info');
     }
 
-    // Open login modal
     function openLoginModal() {
-      window.open('login.html', '_blank');
+      showToast('Login is disabled on this site.', 'info');
     }
 
-    // Close modal
     function closeModal(modalId) {
-      document.getElementById(modalId).classList.remove('active');
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.classList.remove('active');
+      }
     }
 
-    // Switch from login to signup
     function switchToSignup() {
-      window.open('signup.html', '_blank');
+      showToast('Signup is disabled on this site.', 'info');
     }
 
-    // Switch from signup to login
     function switchToLogin() {
-      window.open('login.html', '_blank');
-    }
-    
-    // Open signup modal
-    function openSignupModal() {
-      window.open('signup.html', '_blank');
+      showToast('Login is disabled on this site.', 'info');
     }
 
-    // Handle signup
     async function handleSignup() {
-      const name = sanitizeInput(document.getElementById('signupName').value.trim());
-      const email = sanitizeInput(document.getElementById('signupEmail').value.trim().toLowerCase());
-      const password = document.getElementById('signupPassword').value;
-      const confirm = document.getElementById('signupConfirm').value;
-      const errorDiv = document.getElementById('signupError');
-
-      errorDiv.classList.remove('show');
-      errorDiv.textContent = '';
-
-      // Name is optional (removed validation)
-
-      if (!email) {
-        showError(errorDiv, 'Please enter your email');
-        return;
-      }
-
-      // Validate email format
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showError(errorDiv, 'Please enter a valid email address');
-        return;
-      }
-
-      if (password.length < 8) {
-        showError(errorDiv, 'Password must be at least 8 characters');
-        return;
-      }
-
-      // Validate password strength
-      const hasUpperCase = /[A-Z]/.test(password);
-      const hasLowerCase = /[a-z]/.test(password);
-      const hasNumber = /[0-9]/.test(password);
-      const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
-
-      if (!hasUpperCase) {
-        showError(errorDiv, 'Password must contain at least one uppercase letter');
-        return;
-      }
-
-      if (!hasLowerCase) {
-        showError(errorDiv, 'Password must contain at least one lowercase letter');
-        return;
-      }
-
-      if (!hasNumber) {
-        showError(errorDiv, 'Password must contain at least one number');
-        return;
-      }
-
-      // Special characters are recommended but not required
-      // if (!hasSpecialChar) {
-      //   showError(errorDiv, 'Password must contain at least one special character (!@#$%^&*)');
-      //   return;
-      // }
-
-      if (password !== confirm) {
-        showError(errorDiv, 'Passwords do not match');
-        return;
-      }
-
-      // Check if email already exists
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      if (users.some(u => u.email === email)) {
-        showError(errorDiv, 'Email is already registered');
-        return;
-      }
-
-      // Hash password before storing
-      const hashedPassword = await hashPassword(password);
-
-      // Create new user
-      const newUser = {
-        id: Date.now(),
-        name: name || 'User',
-        email: email,
-        password: hashedPassword,
-        balance: 0,
-        createdAt: new Date().toISOString()
-      };
-
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      localStorage.setItem('currentUser', JSON.stringify({ id: newUser.id, name: newUser.name, email: newUser.email }));
-
-      // Reset form and close modal
-      document.getElementById('signupName').value = '';
-      document.getElementById('signupEmail').value = '';
-      document.getElementById('signupPassword').value = '';
-      document.getElementById('signupConfirm').value = '';
-      closeModal('signupModal');
-
-      updateNavBar({ name: newUser.name });
-      showToast('Account created successfully! Welcome!', 'success');
-      
-      // Landing page disabled - no need to hide
+      showToast('Signup is disabled on this site.', 'info');
     }
 
-    // Handle login
     async function handleLogin() {
-      const email = sanitizeInput(document.getElementById('loginEmail').value.trim().toLowerCase());
-      const password = document.getElementById('loginPassword').value;
-      const errorDiv = document.getElementById('loginError');
-
-      errorDiv.classList.remove('show');
-      errorDiv.textContent = '';
-
-      if (!email) {
-        showError(errorDiv, 'Please enter your email');
-        return;
-      }
-
-      if (!password) {
-        showError(errorDiv, 'Please enter your password');
-        return;
-      }
-
-      // Check rate limit
-      if (!checkRateLimit(email)) {
-        showError(errorDiv, 'Too many login attempts. Please try again in 15 minutes.');
-        return;
-      }
-
-      // Hash password to compare
-      const hashedPassword = await hashPassword(password);
-
-      // Find user
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.email === email && u.password === hashedPassword);
-
-      if (!user) {
-        showError(errorDiv, 'Email or password is incorrect');
-        return;
-      }
-
-      // Check if user is restricted before allowing login
-      if (user.blacklisted) {
-        showError(errorDiv, 'This account has been blacklisted. Access denied.');
-        return;
-      }
-
-      if (user.timeoutUntil && new Date(user.timeoutUntil) > new Date()) {
-        const timeLeft = Math.ceil((new Date(user.timeoutUntil) - new Date()) / 60000);
-        showError(errorDiv, `This account is timed out. Access will be restored in ${timeLeft} minutes.`);
-        return;
-      }
-
-      // Login successful
-      localStorage.setItem('currentUser', JSON.stringify({ id: user.id, name: user.name, email: user.email }));
-      document.getElementById('loginEmail').value = '';
-      document.getElementById('loginPassword').value = '';
-      closeModal('loginModal');
-
-      // Reset rate limit on successful login
-      delete loginAttempts[email];
-
-      updateNavBar({ name: user.name });
-      showToast('Logged in successfully! Welcome back, ' + user.name + '!', 'success');
-      
-      // Landing page disabled - no need to hide
+      showToast('Login is disabled on this site.', 'info');
     }
 
-    // Logout
     function logout() {
-      exitTestMode(true);
-      localStorage.removeItem('currentUser');
-      
-      // Show login/signup buttons
-      const navAuth = document.getElementById('nav-auth');
-      if (navAuth) {
-        navAuth.style.display = 'flex';
-      }
-      
-      // Hide user menu
-      document.getElementById('user-menu').style.display = 'none';
-      
-      // Close sidebar if open
-      const sidebar = document.querySelector('.sidebar-menu');
-      const overlay = document.querySelector('.sidebar-overlay');
-      const hamburger = document.querySelector('.hamburger-menu');
-      if (sidebar) sidebar.classList.remove('active');
-      if (overlay) overlay.classList.remove('active');
-      if (hamburger) hamburger.classList.remove('hidden');
-      
-      showToast('You have been logged out', 'success');
-      
-      // Reload to reset UI
-      setTimeout(() => window.location.reload(), 500);
+      showToast('Login is disabled on this site.', 'info');
     }
 
     // ===== WALLET/FUNDS FUNCTIONS =====
@@ -6566,27 +6843,28 @@ For support, contact: support@atlasfn.com
       event.target.classList.add('active');
       
       // Update tab content
+      document.getElementById('ticketsTab').classList.remove('active');
+      document.getElementById('newTicketTab').classList.remove('active');
+      document.getElementById('allTicketsTab').classList.remove('active');
+      
       if (tab === 'tickets') {
         document.getElementById('ticketsTab').classList.add('active');
-        document.getElementById('newTicketTab').classList.remove('active');
         loadTickets();
-      } else {
-        document.getElementById('ticketsTab').classList.remove('active');
+      } else if (tab === 'new') {
         document.getElementById('newTicketTab').classList.add('active');
+      } else if (tab === 'all') {
+        document.getElementById('allTicketsTab').classList.add('active');
+        loadAllTickets();
       }
     }
 
     function loadTickets() {
       const ticketsList = document.getElementById('ticketsList');
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      
-      if (!currentUser) {
-        ticketsList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">Please log in to view tickets.</p>';
-        return;
-      }
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      const userEmail = userKey ? 'guest_' + Date.now() : null;
       
       const allTickets = JSON.parse(localStorage.getItem('tickets') || '[]');
-      const userTickets = allTickets.filter(t => t.userId === currentUser.email);
+      const userTickets = userEmail ? allTickets.filter(t => t.userId === userEmail) : [];
       
       if (userTickets.length === 0) {
         ticketsList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No tickets yet.</p>';
@@ -6596,8 +6874,10 @@ For support, contact: support@atlasfn.com
       let ticketsHTML = '';
       userTickets.forEach(ticket => {
         const date = new Date(ticket.date).toLocaleString();
+        const messageCount = ticket.messages ? ticket.messages.length : 0;
+        const lastMessage = ticket.messages && ticket.messages.length > 0 ? ticket.messages[ticket.messages.length - 1].text : '';
         ticketsHTML += `
-          <div class="ticket-card">
+          <div class="ticket-card" onclick="openTicketChat(${ticket.id})" style="cursor: pointer;">
             <div class="ticket-header">
               <div>
                 <span class="ticket-status ${ticket.status}">${ticket.status.replace('-', ' ')}</span>
@@ -6606,8 +6886,11 @@ For support, contact: support@atlasfn.com
               <small style="color: #888;">#${ticket.id}</small>
             </div>
             <h4 style="margin: 0 0 0.5rem 0;">${ticket.subject}</h4>
-            <p style="color: #aaa; margin-bottom: 0.5rem;">${ticket.message}</p>
-            <small style="color: #666;">${date}</small>
+            <p style="color: #aaa; margin-bottom: 0.5rem; font-size: 0.9rem;">${lastMessage.substring(0, 80)}${lastMessage.length > 80 ? '...' : ''}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <small style="color: #666;">${date}</small>
+              <small style="color: #a855f7;">${messageCount} message${messageCount !== 1 ? 's' : ''}</small>
+            </div>
           </div>
         `;
       });
@@ -6615,38 +6898,260 @@ For support, contact: support@atlasfn.com
       ticketsList.innerHTML = ticketsHTML;
     }
 
-    function createTicket(event) {
-      event.preventDefault();
+    function loadAllTickets() {
+      const allTicketsList = document.getElementById('allTicketsList');
+      const allTickets = JSON.parse(localStorage.getItem('tickets') || '[]');
       
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      if (!currentUser) {
-        showToast('Please log in to create a ticket', 'error');
+      if (allTickets.length === 0) {
+        allTicketsList.innerHTML = '<p style="text-align: center; color: #888; padding: 2rem;">No tickets yet.</p>';
         return;
       }
+      
+      let ticketsHTML = '';
+      allTickets.forEach(ticket => {
+        const date = new Date(ticket.date).toLocaleString();
+        const messageCount = ticket.messages ? ticket.messages.length : 0;
+        const lastMessage = ticket.messages && ticket.messages.length > 0 ? ticket.messages[ticket.messages.length - 1].text : '';
+        const unreadBadge = ticket.unreadStaff ? '<span style="background: #ff6b6b; color: #fff; border-radius: 50%; padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-left: 0.5rem;">NEW</span>' : '';
+        ticketsHTML += `
+          <div class="ticket-card" onclick="openTicketChat(${ticket.id})" style="cursor: pointer;">
+            <div class="ticket-header">
+              <div>
+                <span class="ticket-status ${ticket.status}">${ticket.status.replace('-', ' ')}</span>
+                <span class="ticket-priority ${ticket.priority}" style="margin-left: 0.5rem;">${ticket.priority}</span>
+                ${unreadBadge}
+              </div>
+              <small style="color: #888;">#${ticket.id}</small>
+            </div>
+            <h4 style="margin: 0 0 0.5rem 0;">${ticket.subject}</h4>
+            <p style="color: #aaa; margin-bottom: 0.5rem; font-size: 0.9rem;">${lastMessage.substring(0, 80)}${lastMessage.length > 80 ? '...' : ''}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <small style="color: #666;">${date} - User: ${ticket.userId}</small>
+              <small style="color: #a855f7;">${messageCount} message${messageCount !== 1 ? 's' : ''}</small>
+            </div>
+          </div>
+        `;
+      });
+      
+      allTicketsList.innerHTML = ticketsHTML;
+      updateStaffTicketBadge();
+    }
+
+    function createTicket(event) {
+      event.preventDefault();
       
       const subject = document.getElementById('ticketSubject').value;
       const priority = document.getElementById('ticketPriority').value;
       const message = document.getElementById('ticketMessage').value;
       
+      const userId = 'guest_' + Date.now();
+      
       const ticket = {
         id: Date.now(),
-        userId: currentUser.email,
+        userId: userId,
         subject: subject,
         priority: priority,
-        message: message,
         status: 'open',
-        date: Date.now()
+        date: Date.now(),
+        messages: [
+          {
+            sender: 'user',
+            senderName: 'You',
+            text: message,
+            timestamp: Date.now()
+          }
+        ],
+        unreadStaff: true
       };
       
       const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
       tickets.push(ticket);
       localStorage.setItem('tickets', JSON.stringify(tickets));
       
+      // Notify staff panel holders
+      notifyStaffPanelHolders(ticket);
+      
       showToast('Ticket created successfully!', 'success');
       document.getElementById('newTicketForm').reset();
       switchSupportTab('tickets');
       loadTickets();
       updateTicketBadge();
+    }
+
+    function notifyStaffPanelHolders(ticket) {
+      // This creates a notification marker for staff
+      const staffNotifications = JSON.parse(localStorage.getItem('staffNotifications') || '[]');
+      staffNotifications.push({
+        type: 'new_ticket',
+        ticketId: ticket.id,
+        subject: ticket.subject,
+        timestamp: Date.now()
+      });
+      localStorage.setItem('staffNotifications', JSON.stringify(staffNotifications));
+    }
+
+    function openTicketChat(ticketId) {
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const ticket = tickets.find(t => t.id === ticketId);
+      
+      if (!ticket) {
+        showToast('Ticket not found', 'error');
+        return;
+      }
+      
+      // Mark as read for staff
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      if (userKey && ['admin', 'moderator', 'custom'].includes(userKey.type)) {
+        ticket.unreadStaff = false;
+        const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+        tickets[ticketIndex] = ticket;
+        localStorage.setItem('tickets', JSON.stringify(tickets));
+      }
+      
+      document.getElementById('chatTicketId').textContent = ticket.id;
+      document.getElementById('chatTicketSubject').textContent = ticket.subject;
+      document.getElementById('chatTicketStatus').textContent = ticket.status.replace('-', ' ');
+      document.getElementById('chatTicketStatus').className = 'ticket-status ' + ticket.status;
+      document.getElementById('chatTicketPriority').textContent = ticket.priority;
+      document.getElementById('chatTicketPriority').className = 'ticket-priority ' + ticket.priority;
+      document.getElementById('chatTicketDate').textContent = new Date(ticket.date).toLocaleString();
+      
+      // Load messages
+      loadTicketMessages(ticket);
+      
+      // Show close button if staff
+      if (userKey && ['admin', 'moderator', 'custom'].includes(userKey.type)) {
+        document.getElementById('ticketCloseSection').style.display = 'block';
+      } else {
+        document.getElementById('ticketCloseSection').style.display = 'none';
+      }
+      
+      closeSupport();
+      document.getElementById('ticketChatModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Scroll to bottom
+      setTimeout(() => {
+        const container = document.getElementById('ticketMessagesContainer');
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+    }
+
+    function closeTicketChat() {
+      document.getElementById('ticketChatModal').classList.remove('active');
+      document.body.style.overflow = '';
+      loadTickets();
+      loadAllTickets();
+    }
+
+    function loadTicketMessages(ticket) {
+      const container = document.getElementById('ticketMessagesContainer');
+      let messagesHTML = '';
+      
+      if (ticket.messages && ticket.messages.length > 0) {
+        ticket.messages.forEach(msg => {
+          const time = new Date(msg.timestamp).toLocaleString();
+          const isStaff = msg.sender === 'staff';
+          const alignment = isStaff ? 'flex-start' : 'flex-end';
+          const bgColor = isStaff ? '#a855f7' : '#0a0a0c';
+          const textColor = isStaff ? '#000' : '#fff';
+          
+          messagesHTML += `
+            <div style="display: flex; justify-content: ${alignment}; margin-bottom: 1rem;">
+              <div style="max-width: 70%; background: ${bgColor}; color: ${textColor}; padding: 0.8rem 1rem; border-radius: 12px;">
+                <div style="font-weight: 600; margin-bottom: 0.3rem; font-size: 0.85rem; opacity: 0.9;">${msg.senderName}</div>
+                <div style="margin-bottom: 0.3rem;">${msg.text}</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">${time}</div>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        messagesHTML = '<p style="text-align: center; color: #888;">No messages yet.</p>';
+      }
+      
+      container.innerHTML = messagesHTML;
+    }
+
+    function sendTicketMessage(event) {
+      event.preventDefault();
+      
+      const ticketId = parseInt(document.getElementById('chatTicketId').textContent);
+      const messageText = document.getElementById('ticketReplyInput').value.trim();
+      
+      if (!messageText) return;
+      
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+      
+      if (ticketIndex === -1) {
+        showToast('Ticket not found', 'error');
+        return;
+      }
+      
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      const isStaff = userKey && ['admin', 'moderator', 'custom'].includes(userKey.type);
+      
+      const message = {
+        sender: isStaff ? 'staff' : 'user',
+        senderName: isStaff ? 'Support Staff' : 'You',
+        text: messageText,
+        timestamp: Date.now()
+      };
+      
+      if (!tickets[ticketIndex].messages) {
+        tickets[ticketIndex].messages = [];
+      }
+      
+      tickets[ticketIndex].messages.push(message);
+      
+      // Mark unread for staff if user sent message
+      if (!isStaff) {
+        tickets[ticketIndex].unreadStaff = true;
+      }
+      
+      localStorage.setItem('tickets', JSON.stringify(tickets));
+      
+      document.getElementById('ticketReplyInput').value = '';
+      loadTicketMessages(tickets[ticketIndex]);
+      
+      // Scroll to bottom
+      setTimeout(() => {
+        const container = document.getElementById('ticketMessagesContainer');
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+      
+      showToast('Message sent', 'success');
+    }
+
+    function closeTicketByStaff() {
+      const ticketId = parseInt(document.getElementById('chatTicketId').textContent);
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const ticketIndex = tickets.findIndex(t => t.id === ticketId);
+      
+      if (ticketIndex === -1) return;
+      
+      tickets[ticketIndex].status = 'closed';
+      localStorage.setItem('tickets', JSON.stringify(tickets));
+      
+      showToast('Ticket closed', 'success');
+      closeTicketChat();
+    }
+
+    function updateStaffTicketBadge() {
+      const userKey = JSON.parse(localStorage.getItem('userActiveKey') || 'null');
+      if (!userKey || !['admin', 'moderator', 'custom'].includes(userKey.type)) return;
+      
+      const tickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+      const unreadCount = tickets.filter(t => t.unreadStaff && t.status !== 'closed').length;
+      
+      const badge = document.getElementById('staffTicketBadge');
+      if (badge && unreadCount > 0) {
+        badge.textContent = unreadCount;
+        badge.style.display = 'inline-block';
+      } else if (badge) {
+        badge.style.display = 'none';
+      }
     }
 
     function updateTicketBadge() {
@@ -6669,13 +7174,6 @@ For support, contact: support@atlasfn.com
 
     // ===== SETTINGS =====
     function openSettings() {
-      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      
-      if (!currentUser) {
-        showToast('Please log in to access settings', 'error');
-        return;
-      }
-      
       // Open settings in new tab
       window.open('settings.html', '_blank');
       toggleSidebar(); // Close sidebar
@@ -6683,72 +7181,7 @@ For support, contact: support@atlasfn.com
 
     // Update navigation bar based on auth state
     function updateNavBar(user) {
-      if (!user || (!user.id && !user.email)) {
-        user = JSON.parse(localStorage.getItem('currentUser') || 'null') || user;
-      }
-      // Hide login/signup buttons when logged in
-      const navAuth = document.getElementById('nav-auth');
-      if (navAuth) {
-        navAuth.style.display = 'none';
-      }
-      
-      // Show user menu
-      const userMenu = document.getElementById('user-menu');
-      if (userMenu) {
-        userMenu.style.display = 'flex';
-        document.getElementById('user-display').textContent = '👤 ' + user.name;
-        
-        // Update balance display
-        const users = JSON.parse(localStorage.getItem('users') || '[]');
-        const fullUser = users.find(u => u.id === user.id || u.email === user.email);
-        if (fullUser) {
-          const balance = fullUser.balance || 0;
-          const balanceEl = document.getElementById('user-balance');
-          if (balanceEl) {
-            balanceEl.textContent = balance.toFixed(2);
-          }
-        }
-      }
-      // Update panel menu items
-      updatePanelMenuVisibility();
-      
-      // Get full user from localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const fullUser = users.find(u => u.id === user.id || u.email === user.email);
-      
-      if (fullUser) {
-        // Show dev button if user is developer
-        if (fullUser.isDev) {
-          const devBtn = document.getElementById('dev-btn');
-          const devNotif = document.getElementById('dev-notif-wrapper');
-          if (devBtn) devBtn.style.display = 'block';
-          if (devNotif) devNotif.style.display = 'flex';
-          renderDevNotifications();
-        } else {
-          const devBtn = document.getElementById('dev-btn');
-          const devNotif = document.getElementById('dev-notif-wrapper');
-          if (devBtn) devBtn.style.display = 'none';
-          if (devNotif) devNotif.style.display = 'none';
-        }
-        
-        // Show head staff button if user is head staff
-        if (fullUser.isHeadStaff) {
-          const headBtn = document.getElementById('head-staff-btn');
-          if (headBtn) headBtn.style.display = 'block';
-        } else {
-          const headBtn = document.getElementById('head-staff-btn');
-          if (headBtn) headBtn.style.display = 'none';
-        }
-        
-        // Show staff button if user is staff
-        if (fullUser.isStaff) {
-          const staffBtn = document.getElementById('staff-btn');
-          if (staffBtn) staffBtn.style.display = 'block';
-        } else {
-          const staffBtn = document.getElementById('staff-btn');
-          if (staffBtn) staffBtn.style.display = 'none';
-        }
-      }
+      return;
     }
 
     // ====== STRIPE PAYMENT INTERFACE ======
@@ -7110,10 +7543,13 @@ For support, contact: support@atlasfn.com
 
     function openHeadStaffPanel() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id);
+      if (!currentUser) {
+        showToast('Access denied. Head Staff privileges required.', 'error');
+        return;
+      }
 
-      if (!user || !user.isHeadStaff) {
+      const flags = getCurrentUserFlags();
+      if (!flags.isHeadStaff) {
         showToast('Access denied. Head Staff privileges required.', 'error');
         return;
       }
@@ -7423,10 +7859,13 @@ For support, contact: support@atlasfn.com
 
     function openDevPanel() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-      const user = users.find(u => u.id === currentUser.id);
+      if (!currentUser) {
+        showToast('Access denied. Developer privileges required.', 'error');
+        return;
+      }
 
-      if (!user || !user.isDev) {
+      const flags = getCurrentUserFlags();
+      if (!flags.isDev) {
         showToast('Access denied. Developer privileges required.', 'error');
         return;
       }
@@ -7836,6 +8275,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Staff access granted.', 'success');
@@ -7866,6 +8310,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Staff access revoked.', 'success');
@@ -7896,6 +8345,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Head Staff access granted.', 'success');
@@ -7926,6 +8380,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Head Staff access revoked.', 'success');
@@ -7958,6 +8417,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'All panels access granted.', 'success');
@@ -7996,6 +8460,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === users[userIndex].id) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           if (emailInput) emailInput.value = '';
@@ -8028,6 +8497,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Developer access granted.', 'success');
@@ -8065,6 +8539,11 @@ For support, contact: support@atlasfn.com
           const currentUser = JSON.parse(localStorage.getItem('currentUser'));
           if (currentUser && currentUser.id === userId) {
             updateNavBar(currentUser);
+            updateCurrentUserProfileOnServer(buildProfileUpdatesFromFlags({
+              isDev: !!users[userIndex].isDev,
+              isStaff: !!users[userIndex].isStaff,
+              isHeadStaff: !!users[userIndex].isHeadStaff
+            }));
           }
 
           showPanelMessage('dev-message', 'Developer access revoked.', 'success');
@@ -8803,91 +9282,85 @@ For support, contact: support@atlasfn.com
       }
     }
 
-    // ====== CROSSHAIR AND EFFECTS ======
-    window.addEventListener('DOMContentLoaded', () => {
-      // Crosshair follow mouse
+    // ====== PERFORMANCE OPTIMIZED: CROSSHAIR AND HEX EFFECTS ======
+    // Simple initialization - runs after DOM is ready
+    function initializeEffects() {
+      console.log('🔧 Initializing crosshair and hex effects...');
+      
+      // Crosshair setup
       const crosshair = document.getElementById('crosshair');
-      if (!crosshair) return;
-      
-      let mouseX = 0, mouseY = 0;
+      if (crosshair) {
+        console.log('✅ Crosshair found');
+        crosshair.style.left = window.innerWidth / 2 + 'px';
+        crosshair.style.top = window.innerHeight / 2 + 'px';
+        crosshair.style.opacity = '1';
+        console.log('✅ Crosshair positioned at center');
+        
+        document.addEventListener('mousemove', (e) => {
+          crosshair.style.left = e.clientX + 'px';
+          crosshair.style.top = e.clientY + 'px';
+        }, { passive: true });
+        
+        // Click animation
+        document.addEventListener('click', () => {
+          crosshair.style.transform = 'translate(-50%, -50%) scale(0.8)';
+          setTimeout(() => {
+            crosshair.style.transform = 'translate(-50%, -50%) scale(1)';
+          }, 100);
+        }, { passive: true });
+      } else {
+        console.error('❌ Crosshair element NOT found');
+      }
 
-      document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        crosshair.style.left = mouseX + 'px';
-        crosshair.style.top = mouseY + 'px';
-      });
-
-      // Shockwave effect on click
-      document.addEventListener('click', (e) => {
-        const shockwave = document.createElement('div');
-        shockwave.className = 'shockwave';
-        shockwave.style.left = e.clientX + 'px';
-        shockwave.style.top = e.clientY + 'px';
-        document.body.appendChild(shockwave);
-
-        // Create multiple expanding rings
-        setTimeout(() => {
-          const shockwave2 = document.createElement('div');
-          shockwave2.className = 'shockwave';
-          shockwave2.style.left = e.clientX + 'px';
-          shockwave2.style.top = e.clientY + 'px';
-          shockwave2.style.animationDelay = '0.1s';
-          document.body.appendChild(shockwave2);
-          setTimeout(() => shockwave2.remove(), 700);
-        }, 50);
-
-        setTimeout(() => shockwave.remove(), 600);
-
-        // Crosshair click animation
-        crosshair.style.transform = 'translate(-50%, -50%) scale(0.8)';
-        setTimeout(() => {
-          crosshair.style.transform = 'translate(-50%, -50%) scale(1)';
-        }, 100);
-      });
-
-      // ====== HEXAGONAL GRID ANIMATION ======
+      // Hex canvas setup
       const canvas = document.getElementById('hexCanvas');
-      if (!canvas) return;
-      
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      
-      let hexMouseX = 0;
-      let hexMouseY = 0;
-      let hexagons = [];
-      
-      // Set canvas size
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        generateHexagons();
+      if (!canvas) {
+        console.error('❌ Canvas not found');
+        return;
       }
       
-      // Hexagon properties
+      console.log('✅ Canvas found');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        console.error('❌ Canvas context failed');
+        return;
+      }
+      
+      console.log('✅ Canvas context ready');
+      let hexMouseX = 0, hexMouseY = 0;
+      let hexagons = [];
+      let lastUpdateTime = 0;
+      const updateInterval = 1000 / 60;
       const hexRadius = 30;
       const hexHeight = Math.sin(Math.PI / 3) * hexRadius;
       
-      // Generate hexagon grid
-      function generateHexagons() {
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        console.log('📐 Canvas resized to', canvas.width, 'x', canvas.height);
         hexagons = [];
-        const cols = Math.ceil(canvas.width / (hexRadius * 1.5)) + 2;
-        const rows = Math.ceil(canvas.height / (hexHeight * 2)) + 2;
-        
-        for (let row = -1; row < rows; row++) {
-          for (let col = -1; col < cols; col++) {
+        const cols = Math.ceil(canvas.width / (hexRadius * 1.5)) + 1;
+        const rows = Math.ceil(canvas.height / (hexHeight * 2)) + 1;
+        for (let row = 0; row < rows; row++) {
+          for (let col = 0; col < cols; col++) {
             const x = col * hexRadius * 1.5;
             const y = row * hexHeight * 2 + (col % 2 === 0 ? 0 : hexHeight);
             hexagons.push({ x, y });
           }
         }
+        console.log('✅ Generated', hexagons.length, 'hexagons');
       }
       
-      // Draw single hexagon
+      const hexAngles = [];
+      for (let i = 0; i < 6; i++) {
+        hexAngles.push((Math.PI / 3) * i);
+      }
+      
       function drawHexagon(x, y, radius, opacity) {
+        if (opacity < 0.02) return;
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
-          const angle = (Math.PI / 3) * i;
+          const angle = hexAngles[i];
           const hx = x + radius * Math.cos(angle);
           const hy = y + radius * Math.sin(angle);
           if (i === 0) ctx.moveTo(hx, hy);
@@ -8895,45 +9368,67 @@ For support, contact: support@atlasfn.com
         }
         ctx.closePath();
         ctx.strokeStyle = `rgba(168, 85, 247, ${opacity})`;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.stroke();
       }
       
-      // Animation loop
+      let frameCount = 0;
       function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const now = performance.now();
+        if (now - lastUpdateTime < updateInterval) {
+          requestAnimationFrame(animate);
+          return;
+        }
+        lastUpdateTime = now;
+        frameCount++;
         
-        hexagons.forEach(hex => {
+        if (frameCount === 1) {
+          console.log('✅ Animation started - first frame rendered');
+        }
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.03)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        for (let i = 0; i < hexagons.length; i++) {
+          const hex = hexagons[i];
           const dx = hexMouseX - hex.x;
           const dy = hexMouseY - hex.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const maxDistance = 200;
+          const distSq = dx * dx + dy * dy;
+          const maxDistSq = 200 * 200;
           
-          // Calculate opacity based on distance from mouse
-          let opacity = 0.1;
-          if (distance < maxDistance) {
-            opacity = 0.6 * (1 - distance / maxDistance);
+          if (distSq < maxDistSq) {
+            const distance = Math.sqrt(distSq);
+            const opacity = (1 - distance / 200) * 0.9;
+            drawHexagon(hex.x, hex.y, hexRadius, opacity);
+          } else {
+            drawHexagon(hex.x, hex.y, hexRadius, 0.2);
           }
-          
-          drawHexagon(hex.x, hex.y, hexRadius, opacity);
-        });
+        }
         
         requestAnimationFrame(animate);
       }
       
-      // Track mouse position for hex grid
       document.addEventListener('mousemove', (e) => {
         hexMouseX = e.clientX;
         hexMouseY = e.clientY;
-      });
+      }, { passive: true });
       
-      // Handle window resize
       window.addEventListener('resize', resizeCanvas);
       
-      // Initialize hex grid
       resizeCanvas();
       animate();
-    });
+      console.log('✅ All effects initialized successfully');
+    }
+    
+    // Wait a bit to ensure DOM is fully ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeEffects);
+      console.log('⏳ Waiting for DOMContentLoaded...');
+    } else {
+      console.log('✅ DOM already ready, initializing now...');
+      initializeEffects();
+    }
     
     // ====== PAYMENT MANAGEMENT FUNCTIONS ======
 
@@ -9540,7 +10035,7 @@ For support, contact: support@atlasfn.com
                 <button onclick="copyLicenseKey('${order.accessKey}')" style="width: 100%; padding: 0.8rem; background: linear-gradient(135deg, #00d4ff, #0099cc); border: none; border-radius: 8px; color: #000; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
                   <i class="fas fa-copy"></i> Copy License Key
                 </button>
-                <button onclick="window.location.href = '#'" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
+                <button onclick="document.getElementById('receiptPageModal').remove(); window.location.hash = ''; window.location.reload();" style="width: 100%; padding: 0.8rem; background: transparent; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.3s;">
                   <i class="fas fa-arrow-left"></i> Back to Home
                 </button>
               </div>
