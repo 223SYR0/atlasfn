@@ -9,6 +9,10 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/ballsackblud.html"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     }
